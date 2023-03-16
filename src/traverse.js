@@ -1,67 +1,106 @@
+import { rpnToExpr } from './expr/index.js';
+
 
 export function getFormula(network, start) {
     const visited = {};
     const nodes = network.body.data.nodes;
     const edges = network.body.data.edges;
 
-    return getFormulaRecursive(start);
+    const rpn = [];
+    getFormulaRecursive(start, rpn);
+
+    console.log("getFormula: RPN:", rpn);
+    return rpnToExpr(rpn);
 
 
-    function text(nodeId) {
+    function text(nodeId, output) {
         const node = nodes.get(nodeId);
-        if ( node.label === ' ' ) {
-            return `(${getFormulaRecursive(nodeId)})`;
+        if ( node.data === null ) {
+            output += getFormulaRecursive(nodeId, output);
         } else {
-            return node.label;
+            output.push(node.data);
         }
     }
 
-    function getFormulaRecursive(node) {
+    function getMembersOfRelation(nodeId) {
+        const conns = network.getConnectedEdges(nodeId);
+        const members = {};
+        let counter = 0;
+        for ( let conn of conns ) {
+            const role = edges.get(conn).role;
+            const children = network.getConnectedNodes(conn).filter(id => id !== nodeId);
+            if ( role === "operand" ) {
+                if ( !members.operands ) {
+                    members.operands = [];
+                }
+                members.operands.push(children[0]);
+            } else {
+                members[ role ] = children[0];
+            }
+            //console.log(" ", role, "->", children);
+        }
+
+        return members;
+    }
+
+    function getFormulaRecursive(node, output) {
         const relations = network.getConnectedNodes(node);
-        console.log("relations:", relations);
-        const output = [];
+        let added = 0;
+
         for ( let relation of relations ) {
             if ( visited[relation] ) {
                 continue;
             }
             visited[relation] = true;
-            const operator = nodes.get(relation).label;
-            const conns = network.getConnectedEdges(relation);
-            console.log("operator", operator);
-            const parts = {};
-            let counter = 0;
-            for ( let conn of conns ) {
-                const connType = edges.get(conn).label;
-                const children = network.getConnectedNodes(conn).filter(id => id !== relation);
-                if ( connType !== "⊙" ) {
-                    parts[ connType ] = children[0];
-                } else {
-                    parts[ counter++ ] = children[0];
-                }
-                console.log(" ", connType, "->", children);
+
+            const operator = nodes.get(relation).data;
+            const members = getMembersOfRelation(relation);
+            if ( members['trunk'] === node  && operator === "^" ) {
+                text(members['l-operand'], output);
+                text(members['r-operand'], output);
+                output.push('^/2');
+
+            } else if ( members['trunk'] === node  && operator !== "^" ) {
+                text(members.operands[0], output);
+                text(members.operands[1], output);
+                output.push(operator + "/2");
+            } else if ( members['l-operand'] === node && operator === "^" ) {
+                text(members['r-operand'], output);
+                text(members['trunk'], output);
+                output.push('√/2');
+
+            } else if ( members['r-operand'] === node && operator === "^" ) {
+                text(members['l-operand'], output);
+                text(members['trunk'], output);
+                output.push('log/2');
+
+            } else if ( members['operands'] && members['operands'].includes(node) && operator === "·" ) {
+
+                text(members['trunk'], output);
+                members.operands.forEach((member) => {
+                    if ( member !== node ) {
+                        text(member, output);
+                    }
+                });
+                output.push(':/' + members.operands.length);
+
+            } else if ( members['operands'] && members['operands'].includes(node) && operator === "+" ) {
+
+                text(members['trunk'], output);
+                members.operands.forEach((member) => {
+                    if ( member !== node ) {
+                        text(member, output);
+                    }
+                });
+                output.push('-/' + members.operands.length);
             }
 
-            console.log("operator", operator, "parts:", parts, "node:", node, parts['='] === node, operator === "◌ⁿ");
-            if ( parts['='] === node  && operator === "◌ⁿ" ) {
-                console.log("hello");
-                output.push(text(parts['L']) + ' ^ ' + text(parts['R']));
-            } else if ( parts['='] === node  && operator !== "◌ⁿ" ) {
-                output.push(text(parts[0]) + ' ' + operator + ' ' + text(parts[1]));
-            } else if ( parts['L'] === node && operator === "◌ⁿ" ) {
-                output.push(text(parts['R']) + '√(' + text(parts['=']) + ')');
-            } else if ( parts['R'] === node && operator === "◌ⁿ" ) {
-                output.push('log_' + text(parts['L']) + '(' + text(parts['=']) + ')');
-            } else if ( parts[0] === node && operator === "·" ) {
-                output.push(text(parts['=']) + ' : ' + text(parts[1]));
-            } else if ( parts[1] === node && operator === "·" ) {
-                output.push(text(parts['=']) + ' : ' + text(parts[0]));
-            } else if ( parts[0] === node && operator === "+" ) {
-                output.push(text(parts['=']) + ' – ' + text(parts[1]));
-            } else if ( parts[1] === node && operator === "+" ) {
-                output.push(text(parts['=']) + ' – ' + text(parts[0]));
-            }
+            added++;
         }
 
-        return output.join(' = ');
+        if ( added > 1 ) {
+            output.push('=/2');
+        }
     }
+
 }

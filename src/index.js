@@ -16,16 +16,22 @@ const network = new Network(container, {}, options);
 network.on( 'click', function(properties) {
     const nodes = network.body.data.nodes;
 
-    var ids = properties.nodes;
-    var clickedNodes = nodes.get(ids);
+    const ids = properties.nodes;
+    if ( ids.length !== 1 ) {
+        return;
+    }
+
     const node = nodes.get(ids[0]);
-    document.querySelector('#output').value = (node.label === ' ' ? '' : node.label + ' = ') + getFormula(network, ids[0]);
+    if ( node.type !== "value" ) {
+        return;
+    }
+
+    document.querySelector('#output').value = (node.data === null ? '' : node.label + ' = ') + getFormula(network, ids[0]);
 });
 
 
 
 window.onload = () => {
-    console.log("load");
     const button = document.querySelector('#common');
     button.onclick = (event) => {
         const ids = network.getSelectedNodes();
@@ -37,13 +43,10 @@ window.onload = () => {
         console.log(event);
         switch ( event.keyCode ) {
             case 13:
-                console.log("enter");
                 network.setData(loadFormula(event.target.value));
                 break;
         }
     };
 
     network.setData(loadFormula(input.value));
-
-    console.log("hello");
 };

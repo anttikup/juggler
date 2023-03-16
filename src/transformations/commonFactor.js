@@ -27,34 +27,34 @@ export function extractCommonFactor(network, nodeId) {
 
     if ( node.label === '+' ) {
         const connected1 = network.getConnectedEdges(nodeId);
-        console.log("connected 1:", connected1);
+        //console.log("connected 1:", connected1);
         const tosummands = connected1.filter(id => edges.get(id).type === 'operand');
-        console.log("tosummands:", tosummands);
+        //console.log("tosummands:", tosummands);
         const summands = tosummands.flatMap(id => network.getConnectedNodes(id, 'to')).filter(id => id !== nodeId);
-        console.log("summands:", summands);
+        //console.log("summands:", summands);
         const multiplications = summands.flatMap(id => network.getConnectedNodes(id, 'to'));
-        console.log("multiplications:", multiplications);
+        //console.log("multiplications:", multiplications);
         const factors = multiplications.flatMap(id => network.getConnectedNodes(id, 'to'));
-        console.log("factors:", factors);
+        //console.log("factors:", factors);
         const commonFactor = duplicates(factors);
         if ( commonFactor.length === 0 ) {
             return;
         }
-        console.log(commonFactor[0]);
+        //console.log(commonFactor[0]);
         const otherFactors = factors.filter(factor => factor !== commonFactor[0]);
 
         nodes.update(makeOperatorNode(node.id, '·'));
         const plus = makeId();
         nodes.add(makeOperatorNode(plus, '+'));
-        const help = makeId();
-        nodes.add(makeValueNode(help, ' '));
+        const helper = makeId();
+        nodes.add(makeValueNode(helper));
 
         summands.forEach(id => nodes.remove(id));
         multiplications.forEach(id => nodes.remove(id));
 
         edges.add(makePartEdge(node.id, commonFactor[0]));
         edges.add(makePartEdge(node.id, help));
-        edges.add(makeWholeEdge(help, plus));
+        edges.add(makeWholeEdge(helper, plus));
         edges.add(makePartEdge(plus, otherFactors[0]));
         edges.add(makePartEdge(plus, otherFactors[1]));
 

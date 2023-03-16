@@ -19,7 +19,7 @@ export function makePartEdge(from, to) {
         to,
         color: '#2b7ce978',
         label: '⊙',
-        type: 'operand'
+        role: 'operand'
     };
 }
 
@@ -29,7 +29,7 @@ export function makeAEdge(from, to) {
         to,
         color: '#2bc7e978',
         label: 'R',
-        type: 'r-operand'
+        role: 'r-operand'
     };
 }
 
@@ -39,13 +39,12 @@ export function makeBEdge(from, to) {
         to,
         color: '#b27ce978',
         label: 'L',
-        type: 'l-operand'
+        role: 'l-operand'
     };
 }
 
 export function makeWholeEdge(from, to, parentOp) {
     const color = getOperatorColor(parentOp);
-    console.log("whole:", parentOp);
     return {
         from,
         to,
@@ -53,30 +52,39 @@ export function makeWholeEdge(from, to, parentOp) {
         length: 3,
         width: 5,
         label: '=',
-        type: 'trunk'
+        role: 'trunk'
     };
 }
 
-export function makeValueNode(id, label) {
+export function makeValueNode(id, value = null) {
     return {
         id,
-        label,
-        type: 'value'
+        label: String(value || ' '),
+        type: 'value',
+        data: value
     };
 }
 
-export function makeOperatorNode(id, label) {
-    const color = getOperatorColor(label);
+export function makeOperatorNode(id, text, value) {
+    const color = getOperatorColor(text);
+
+    value = value || text;
+
+    if ( value === NaN ) {
+        throw new Error(`NAN: ${id}, ${text}, ${value}`);
+    }
+    console.assert(value !== NaN, `value on NaN: ${id}, ${text}, ${value}`);
 
     return {
         id,
-        label,
+        label: text,
         color,
         font: {
             color: 'white',
             //strokeWidth: 1
             size: 20,
         },
-        type: 'operator'
+        type: 'operator',
+        data: value
     };
 }
