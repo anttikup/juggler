@@ -21,7 +21,7 @@
     "chai": "*",
     "css-loader": "^6.7.3",
     "mocha": "*",
-    "serve": "^13.0.2",
+    "serve": "^14.2.0",
     "style-loader": "^3.3.2",
     "webpack": "^5.64.4",
     "webpack-cli": "^4.9.1",
