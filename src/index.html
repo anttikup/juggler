@@ -1,5 +1,6 @@
 <html>
   <head>
+    <title>Juggler</title>
     <style type="text/css">
       * {
           padding: 0;
@@ -90,7 +91,7 @@
   <body>
     <div id="grid">
       <div id="formula-bar">
-        Input formula: <input type="text" value="y = 2 + 3" id="formula" /> Output: <input type="text" value="" id="output" disabled />
+        Input formula: <input type="text" value="y = 2 + x ^ (z / 9) + cos(3 / 4)" id="formula" /> Output: <input type="text" value="" id="output" disabled />
       </div>
       <div id="mynetwork"></div>
       <div id="sidebar">
@@ -117,15 +118,22 @@
 
           <dt>sin, cos, tan; arcsin, arccos, arctan</dt>
           <dd>trigonometric functions and their inverse; use as functions: <code>sin(0.1) + cos(3 / 5)</code></dd>
+
+          <dt>()</dt>
+          <dd></dd>
+
+          <dt>=</dt>
+          <dd>multiple equality signs are allowed: <code>x + 2 = y / 2 = 9</code></dd>
         </dl>
 
-        You can use any other symbol as variable names.
+        <p>
+          You can use any other symbol as variable names.
+        </p>
 
       </div>
       <div id="bottom">
         text
       </div>
     </div>
-    <script type="text/javascript" src="./build/bundle.js"></script>
   </body>
 </html>

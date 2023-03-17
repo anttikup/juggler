@@ -29,6 +29,8 @@ window.onload = () => {
             return;
         }
 
+
+
         document.querySelector('#output').value = getFormula(network, povId);
     });
 

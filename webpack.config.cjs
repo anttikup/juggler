@@ -22,16 +22,22 @@ module.exports = {
     resolve: {
         extensions: ['*', '.js']
     },
-  output: {
-    path: path.resolve(__dirname, './build'),
-    filename: 'bundle.js',
-  },
-  devServer: {
-    static: path.resolve(__dirname, './'),
-  },
-  plugins: [
-           new HtmlWebpackPlugin({
-               template: 'src/index.html'
-           })
-  ]
+    output: {
+        path: path.resolve(__dirname, './build'),
+        filename: 'bundle.js',
+    },
+    devServer: {
+        static: path.resolve(__dirname, './'),
+        client: {
+            overlay: {
+                warnings: false,
+                errors: true
+            }
+        }
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: 'src/index.html'
+        })
+    ]
 };
