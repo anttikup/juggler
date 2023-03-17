@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-      "start": "webpack watch --config ./webpack.config.cjs --mode development",
+    "start": "webpack watch --config ./webpack.config.cjs --mode development",
     "build": "webpack build --config ./webpack.config.cjs --mode production",
     "serve": "serve ./build",
     "test": "mocha './src/**/*.spec.js'",
@@ -20,8 +20,8 @@
     "babel-loader": "^8.2.3",
     "chai": "*",
     "css-loader": "^6.7.3",
+    "html-webpack-plugin": "^5.5.0",
     "mocha": "*",
-    "serve": "^14.2.0",
     "style-loader": "^3.3.2",
     "webpack": "^5.64.4",
     "webpack-cli": "^4.9.1",
