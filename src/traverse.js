@@ -29,7 +29,7 @@ export function getFormula(network, start) {
         for ( let conn of conns ) {
             const role = edges.get(conn).role;
             const children = network.getConnectedNodes(conn).filter(id => id !== nodeId);
-            if ( role === "operand" ) {
+            if ( role === "operand" || role === "n-operand" ) {
                 if ( !members.operands ) {
                     members.operands = [];
                 }
@@ -55,12 +55,14 @@ export function getFormula(network, start) {
 
             const operator = nodes.get(relation).data;
             const members = getMembersOfRelation(relation);
+            console.log("operator:", operator, "members:", members, "node:", node);
+
             if ( members['trunk'] === node  && operator === "^" ) {
                 text(members['l-operand'], output);
                 text(members['r-operand'], output);
                 output.push('^/2');
 
-            } else if ( members['trunk'] === node  && operator !== "^" ) {
+            } else if ( members['trunk'] === node  && ["·", "+"].includes(operator) ) {
                 text(members.operands[0], output);
                 text(members.operands[1], output);
                 output.push(operator + "/2");
@@ -93,6 +95,17 @@ export function getFormula(network, start) {
                     }
                 });
                 output.push('-/' + members.operands.length);
+
+            } else if ( members['trunk'] === node && operator === "cos" ) {
+                console.log("trunk, cos");
+                text(members.operands[0], output);
+                output.push('cos/1');
+
+            } else if ( members.operands && members.operands[0] === node && operator === "cos" ) {
+                console.log("operand, cos");
+                text(members['trunk'], output);
+                output.push('arccos/1');
+
             }
 
             added++;

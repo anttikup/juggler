@@ -1,117 +1,146 @@
 export const operators = {
     /** prefix **/
-    "+/1"   : {
+    "+/1" : {
         symbol: "+",
         precedence: 10,
-        arity:      1
+        arity: 1
     },
-    "-/1"   : {
+    "-/1" : {
         symbol: "-",
         precedence: 10,
-        arity:      1
+        arity: 1
     },
-    "–/1"   : {
+    "–/1" : {
         symbol: "–",
         precedence: 10,
-        arity:      1
+        arity: 1
     },
-    "√/1"   : {
+    "√/1" : {
         symbol: "√",
         precedence: 10,
-        arity:      1
+        arity: 1
     },
 
     /** infix **/
-    "./2"   : {
+    "./2" : {
         symbol: ".",
         precedence: 8,
-        arity:      2
+        arity: 2
     },
-    "^/2"   : {
+    "^/2" : {
         symbol: "^",
         precedence: 6,
-        arity:      2
+        arity: 2
     },
-    "√/2"   : {
+    "√/2" : {
         symbol: "√",
         precedence: 6,
-        arity:      2
+        arity: 2
     },
-    "root/2"   : {
+    "root/2" : {
         symbol: "root",
         precedence: 6,
-        arity:      2
+        arity: 2
     },
-    "log/2"   : {
+    "log/2" : {
         symbol: "log",
         precedence: 6,
-        arity:      2
+        arity: 2
     },
-    "*/2"   : {
+    "*/2" : {
         symbol: "*",
         precedence: 4,
-        arity:      2
+        arity: 2
     },
-    "×/2"   : {
+    "×/2" : {
         symbol: "×",
         precedence: 4,
-        arity:      2
+        arity: 2
     },
-    "·/2"   : {
+    "·/2" : {
         symbol: "·",
         precedence: 4,
-        arity:      2
+        arity: 2
     },
-    ":/2"   : {
+    ":/2" : {
         symbol: ":",
         precedence: 4,
-        arity:      2
+        arity: 2
     },
-    "//2"   : {
+    "//2" : {
         symbol: "/",
         precedence: 4,
-        arity:      2
+        arity: 2
     },
-    "+/2"   : {
+    "+/2" : {
         symbol: "+",
         precedence: 2,
-        arity:      2
+        arity: 2
     },
-    "-/2"   : {
+    "-/2" : {
         symbol: "-",
         precedence: 2,
-        arity:      2
+        arity: 2
     },
-    "–/2"   : {
+    "–/2" : {
         symbol: "–",
         precedence: 2,
-        arity:      2
+        arity: 2
     },
-    ",/2"   : {
+    ",/2" : {
         symbol: ",",
         precedence: 1,
-        arity:      2
+        arity: 2
     },
-    "=/2"   : {
+    "=/2" : {
         symbol: "=",
         precedence: 0,
-        arity:      2
+        arity: 2
     },
     "!=/2"  : {
         symbol: "!=",
         precedence: 0,
-        arity:      2
+        arity: 2
     },
     "is/2"  : {
         symbol: "is",
         precedence: 0,
-        arity:      2
+        arity: 2
     },
     "<=>/2" : {
         symbol: "<=>",
         precedence: -1,
-        arity:      2
+        arity: 2
     }
+};
+
+export const functions = {
+    "cos/1" : {
+        symbol: "cos",
+        arity: 1
+    },
+    "arccos/1" : {
+        symbol: "arccos",
+        arity: 1
+    },
+
+    // For testing; TODO needs a way to insert functions
+    "f/2" : {
+        symbol: "f",
+        arity: 2
+    },
+    "f/3" : {
+        symbol: "f",
+        arity: 3
+    },
+    "invf/2" : {
+        symbol: "invf",
+        arity: 2
+    },
+    "revf/2" : {
+        symbol: "revf",
+        arity: 2
+    },
 };
 
 

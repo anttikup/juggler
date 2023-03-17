@@ -40,7 +40,7 @@ window.onload = () => {
 
     const input = document.querySelector('#formula');
     input.onkeypress = (event) => {
-        console.log(event);
+        //console.log(event);
         switch ( event.keyCode ) {
             case 13:
                 network.setData(loadFormula(event.target.value));

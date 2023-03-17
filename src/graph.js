@@ -1,20 +1,23 @@
 import { DataSet } from "vis-data";
 import { Network } from "vis-network";
 
-import { exprToRPN, operators } from './expr/index.js';
+import { exprToRPN, operators, functions } from './expr/index.js';
 import {
     makePartEdge,
     makeAEdge,
     makeBEdge,
+    makeNEdge,
     makeWholeEdge,
     makeValueNode,
-    makeOperatorNode
+    makeOperatorNode,
+    makeFunctionNode
 } from './nodesedges.js';
 import { makeId } from './id.js';
 
 function isNumber(item) {
     return (Number(item) === item);
 }
+
 
 export function loadFormula(formulaStr) {
     const rpn = exprToRPN(formulaStr);
@@ -101,6 +104,25 @@ export function loadFormula(formulaStr) {
                 stack.push(valId);
             } else if ( arity === 2 ) {
                 throw new Error(`Unknown operator: ${symbol}`);
+            } else {
+                throw new Error("Not implemented");
+            }
+        } else if ( functions[item] ) {
+            const func = functions[item];
+            const arity = func.arity;
+            const symbol = func.symbol;
+            const funcId = makeId();
+
+            if ( arity === 1 ) {
+                nodes.add(makeFunctionNode(funcId, symbol));
+                const op1 = stack.pop();
+                edges.add(makeNEdge(funcId, op1, 1));
+                const valId = makeId();
+                nodes.add(makeValueNode(valId));
+                edges.add(makeWholeEdge(valId, funcId, symbol));
+                stack.push(valId);
+            } else {
+                throw new Error("Not implemented");
             }
         } else if ( isNumber(item) ) {
             const valId = makeId();

@@ -7,7 +7,7 @@
   "scripts": {
     "start": "webpack watch --config ./webpack.config.cjs --mode development",
     "serve": "serve ./build",
-    "test": "mocha ./src/**/*.spec.js",
+    "test": "mocha './src/**/*.spec.js'",
     "lint": "eslint './src/**/*.{js}'",
     "lint:fix": "eslint './src/**/*.{js}' --fix"
   },

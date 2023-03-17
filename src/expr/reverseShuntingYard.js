@@ -1,4 +1,4 @@
-import { operators } from './data.js';
+import { operators, functions } from './data.js';
 
 /**
  * Extracts arity from operator.
@@ -39,6 +39,19 @@ function getOperator(oper) {
 
 function isOperator(token) {
     return !!operators[token];
+}
+
+function getFunction(oper) {
+    if ( functions[oper] ) {
+        return functions[oper];
+    }
+
+    throw new Error(`No such function: ${oper}`);
+}
+
+
+function isFunction(token) {
+    return !!functions[token];
 }
 
 
@@ -85,13 +98,32 @@ export function rpnToExpr(rpn) {
             } else {
                 stack.push({
                     precedence,
-                    text: params.join(" " + operator.symbol + " " )
+                    text: operator.symbol === ','
+                        ? params.join(', ')
+                        : params.join(' ' + operator.symbol + ' ')
                 });
             }
+        } else if ( isFunction(token) ) {
+            const func = getFunction(token);
+            const arity = func.arity;
+            const precedence = func.precedence;
+            const params = [];
+
+            console.assert ( arity <= stack.length, 'Not enough parameters' );
+
+            for ( let j = 0; j < arity; j++ ) {
+                const item = stack.pop();
+                params[arity-j-1] = item.text;
+            }
+
+            stack.push({
+                precedence,
+                text: func.symbol + '(' + params.join(', ') + ')'
+            });
         } else {
             stack.push({ text: token });
         }
-        //console.log("STACK: " + JSON.stringify(stack));
+        //console.log('STACK: ' + JSON.stringify(stack));
     }
 
     console.assert(stack.length === 1, `stack left: ${JSON.stringify(stack)}`);

@@ -4,9 +4,10 @@ function getOperatorColor(op) {
             return '#0abf57';
         case '·':
             return '#0a57bf';
-        case '◌ⁿ':
         case '^':
             return '#bf0a57';
+        case 'f':
+            return '#57bf0a';
     }
 
     return '#2b7ce9';
@@ -43,6 +44,16 @@ export function makeBEdge(from, to) {
     };
 }
 
+export function makeNEdge(from, to, n) {
+    return {
+        from,
+        to,
+        color: '#b27ce978',
+        label: String(n),
+        role: 'n-operand'
+    };
+}
+
 export function makeWholeEdge(from, to, parentOp) {
     const color = getOperatorColor(parentOp);
     return {
@@ -59,16 +70,16 @@ export function makeWholeEdge(from, to, parentOp) {
 export function makeValueNode(id, value = null) {
     return {
         id,
-        label: String(value || ' '),
+        label: String(value ?? ' '),
         type: 'value',
         data: value
     };
 }
 
 export function makeOperatorNode(id, text, value) {
-    const color = getOperatorColor(text);
+    const color = getOperatorColor(value);
 
-    value = value || text;
+    value = value ?? text;
 
     if ( value === NaN ) {
         throw new Error(`NAN: ${id}, ${text}, ${value}`);
@@ -85,6 +96,17 @@ export function makeOperatorNode(id, text, value) {
             size: 20,
         },
         type: 'operator',
+        data: value
+    };
+}
+
+export function makeFunctionNode(id, value) {
+    const color = getOperatorColor(value);
+    return {
+        id,
+        label: value,
+        color,
+        type: 'function',
         data: value
     };
 }

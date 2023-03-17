@@ -25,10 +25,10 @@ export function extractCommonFactor(network, nodeId) {
     const { nodes, edges } = network.body.data;
     const node = nodes.get(nodeId);
 
-    if ( node.label === '+' ) {
+    if ( node.data === '+' ) {
         const connected1 = network.getConnectedEdges(nodeId);
         //console.log("connected 1:", connected1);
-        const tosummands = connected1.filter(id => edges.get(id).type === 'operand');
+        const tosummands = connected1.filter(id => edges.get(id).role === 'operand');
         //console.log("tosummands:", tosummands);
         const summands = tosummands.flatMap(id => network.getConnectedNodes(id, 'to')).filter(id => id !== nodeId);
         //console.log("summands:", summands);
@@ -53,7 +53,7 @@ export function extractCommonFactor(network, nodeId) {
         multiplications.forEach(id => nodes.remove(id));
 
         edges.add(makePartEdge(node.id, commonFactor[0]));
-        edges.add(makePartEdge(node.id, help));
+        edges.add(makePartEdge(node.id, helper));
         edges.add(makeWholeEdge(helper, plus));
         edges.add(makePartEdge(plus, otherFactors[0]));
         edges.add(makePartEdge(plus, otherFactors[1]));
