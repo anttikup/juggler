@@ -1,4 +1,4 @@
-import { rpnToExpr, functions } from './expr/index.js';
+import { rpnToExpr, functions } from '../expr/index.js';
 import { isMain, getInverse } from './inverse.js';
 
 
@@ -8,7 +8,17 @@ export function getFormula(network, start) {
     const edges = network.body.data.edges;
 
     const rpn = [];
-    getFormulaRecursive(start, rpn);
+
+    const nodeinfo = nodes.get(start);
+
+    // if node has a name
+    if ( nodeinfo.data !== null ) {
+        rpn.push(nodes.get(start).data);
+        getFormulaRecursive(start, rpn);
+        rpn.push('=/2');
+    } else {
+        getFormulaRecursive(start, rpn);
+    }
 
     console.log("getFormula: RPN:", rpn);
     return rpnToExpr(rpn);
@@ -44,65 +54,65 @@ export function getFormula(network, start) {
         return members;
     }
 
-    function getFormulaRecursive(node, output) {
-        const relations = network.getConnectedNodes(node);
+    function getFormulaRecursive(nodeId, output) {
+        const relations = network.getConnectedNodes(nodeId);
         let added = 0;
-
         for ( let relation of relations ) {
             if ( visited[relation] ) {
                 continue;
             }
+
             visited[relation] = true;
 
             const operator = nodes.get(relation).data;
             const members = getMembersOfRelation(relation);
-            console.log("operator:", operator, "members:", members, "node:", node);
+            console.log("operator:", operator, "members:", members, "node:", nodeId);
 
-            if ( members['trunk'] === node  && operator === "^/2" ) {
+            if ( members['trunk'] === nodeId  && operator === "^/2" ) {
                 text(members['l-operand'], output);
                 text(members['r-operand'], output);
                 output.push('^/2');
 
-            } else if ( members['trunk'] === node  && ["·/2", "+/2"].includes(operator) ) {
+            } else if ( members['trunk'] === nodeId  && ["·/2", "+/2"].includes(operator) ) {
                 text(members.operands[0], output);
                 text(members.operands[1], output);
                 output.push(operator);
-            } else if ( members['l-operand'] === node && operator === "^/2" ) {
+            } else if ( members['l-operand'] === nodeId && operator === "^/2" ) {
                 text(members['r-operand'], output);
                 text(members['trunk'], output);
                 output.push('√/2');
 
-            } else if ( members['r-operand'] === node && operator === "^/2" ) {
+            } else if ( members['r-operand'] === nodeId && operator === "^/2" ) {
                 text(members['l-operand'], output);
                 text(members['trunk'], output);
                 output.push('log/2');
 
-            } else if ( members['operands'] && members['operands'].includes(node) && operator === "·/2" ) {
+            } else if ( members['operands'] && members['operands'].includes(nodeId) && operator === "·/2" ) {
 
                 text(members['trunk'], output);
                 members.operands.forEach((member) => {
-                    if ( member !== node ) {
+                    if ( member !== nodeId ) {
                         text(member, output);
                     }
                 });
                 output.push('//' + members.operands.length);
 
-            } else if ( members['operands'] && members['operands'].includes(node) && operator === "+/2" ) {
+            } else if ( members['operands'] && members['operands'].includes(nodeId) && operator === "+/2" ) {
 
                 text(members['trunk'], output);
                 members.operands.forEach((member) => {
-                    if ( member !== node ) {
+                    if ( member !== nodeId ) {
                         text(member, output);
                     }
                 });
                 output.push('−/' + members.operands.length);
 
-            } else if ( members['trunk'] === node && functions[operator] && isMain(operator) ) {
+            } else if ( members['trunk'] === nodeId && functions[operator] && isMain(operator) ) {
                 console.log("trunk, ", operator);
                 text(members.operands[0], output);
                 output.push(operator);
 
-            } else if ( members.operands && members.operands[0] === node && isMain(operator) ) {
+            } else if ( members.operands && members.operands[0] === nodeId && isMain(operator) ) {
                 console.log("operand, cos");
                 text(members['trunk'], output);
                 output.push(getInverse(operator));
@@ -112,7 +122,7 @@ export function getFormula(network, start) {
             added++;
         }
 
-        if ( added > 1 ) {
+        while ( --added > 0 ) {
             output.push('=/2');
         }
     }

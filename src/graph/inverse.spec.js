@@ -1,4 +1,4 @@
-import { expect } from "./testconfig.js";
+import { expect } from "../testconfig.js";
 
 import { getInverse, getReverse } from './inverse.js';
 

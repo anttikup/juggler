@@ -6,7 +6,7 @@ import {
     makeWholeEdge,
     makeValueNode,
     makeOperatorNode
-} from '../nodesedges.js';
+} from '../graph/nodesedges.js';
 
 const duplicates = arr => {
     const seen = {};

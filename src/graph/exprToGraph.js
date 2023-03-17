@@ -1,7 +1,6 @@
 import { DataSet } from "vis-data";
-import { Network } from "vis-network";
 
-import { exprToRPN, operators, functions } from './expr/index.js';
+import { exprToRPN, operators, functions } from '../expr/index.js';
 import {
     makePartEdge,
     makeAEdge,
@@ -12,11 +11,34 @@ import {
     makeOperatorNode,
     makeFunctionNode
 } from './nodesedges.js';
-import { makeId } from './id.js';
+import { makeId } from '../id.js';
 
 function isNumber(item) {
     return (Number(item) === item);
 }
+
+
+function moveEdges(from, to, edges) {
+    console.log("MOVE EDGES:", from, to);
+
+    const edges_to_move = edges.get({
+        filter: function (item) {
+            return (item.from === from || item.to === from);
+        }
+    });
+
+    edges_to_move.forEach(edge => {
+        if ( edge.from === from ) {
+            edge.from = to;
+            console.log("moved", from);
+        }
+        if ( edge.to === from ) {
+            edge.to = to;
+            console.log("moved", from);
+        }
+    });
+}
+
 
 
 export function loadFormula(formulaStr) {
@@ -38,14 +60,18 @@ export function loadFormula(formulaStr) {
             if ( operator === "=/2" ) {
                 const op2 = stack.pop();
                 const op1 = stack.pop();
-                //console.log("= (1):", nodes.get(op1));
-                //console.log("= (2):", nodes.get(op2));
+                console.log("= (1) [", op1, "]:", nodes.get(op1));
+                console.log("= (2) [", op2, "]:", nodes.get(op2));
                 if ( nodes.get(op1).data === null ) {
                     nodes.update({ ...nodes.get(op2), id: op1 });
                     nodes.remove(op2);
+                    moveEdges(op2, op1, edges);
+                    stack.push(op1);
                 } else {
                     nodes.update({ ...nodes.get(op1), id: op2 });
                     nodes.remove(op1);
+                    moveEdges(op1, op2, edges);
+                    stack.push(op2);
                 }
                 nodes.remove(opId);
             } else if ( operator === "−/2" ) {
@@ -163,16 +189,8 @@ export function loadFormula(formulaStr) {
         //console.log("stack:", stack);
     }
 
-    //console.log("nodes:", nodes);
-    //console.log("edges:", edges);
-
-    // provide the data in the vis format
-    var data = {
+    return {
         nodes: nodes,
         edges: edges
     };
-
-    // initialize your network!
-
-    return data;
 };
