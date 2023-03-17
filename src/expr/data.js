@@ -92,7 +92,7 @@ export const operators = {
         precedence: 0,
         arity: 2
     },
-    "<=>/2" : {
+    "⇔/2" : {
         symbol: "<=>",
         precedence: -1,
         arity: 2

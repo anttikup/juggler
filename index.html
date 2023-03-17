@@ -18,6 +18,10 @@
           margin-top: 0;
       }
 
+      p {
+          margin-bottom: 0.5em;
+      }
+
       #mynetwork {
           width: 100%;
           height: 90vh;
@@ -66,6 +70,21 @@
       input {
           width: 30em;
       }
+
+      dt {
+          font-weight: bold;
+      }
+
+      dl,
+      dd {
+          font-size: 0.9rem;
+      }
+
+      dd {
+          margin-bottom: 1em;
+          margin-left: 1em;
+      }
+
     </style>
   </head>
   <body>
@@ -79,8 +98,29 @@
         <button id="common">Common factor</button>
         <h2>Help</h2>
         <p>
-          Insert a formula and select one of the blue items in the graph to see the equation from that point of view.
+          Enter a formula and select one of the blue items in the graph to see the equation from that point of view.
         </p>
+
+        <p>
+          You can use the following symbols in the equation:
+
+        </p>
+        <dl>
+          <dt>+ - * / ^</dt>
+          <dd>plus, minus, multiplication, division, power</dd>
+
+          <dt>log</dt>
+          <dd>logarithm, use like an operator: <code>10&nbsp;log&nbsp;1000</code></dd>
+
+          <dt>root</dt>
+          <dd>root, use like an operator: <code>2&nbsp;root&nbsp;9</code></dd>
+
+          <dt>sin, cos, tan; arcsin, arccos, arctan</dt>
+          <dd>trigonometric functions and their inverse; use as functions: <code>sin(0.1) + cos(3 / 5)</code></dd>
+        </dl>
+
+        You can use any other symbol as variable names.
+
       </div>
       <div id="bottom">
         text
