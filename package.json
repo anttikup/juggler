@@ -5,7 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "webpack watch --config ./webpack.config.cjs --mode development",
+      "start": "webpack watch --config ./webpack.config.cjs --mode development",
+    "build": "webpack build --config ./webpack.config.cjs --mode production",
     "serve": "serve ./build",
     "test": "mocha './src/**/*.spec.js'",
     "lint": "eslint './src/**/*.{js}'",
