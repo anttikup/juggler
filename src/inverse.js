@@ -1,5 +1,14 @@
 import { operators, functions } from './expr/data.js';
 
+
+export function isMain(op_or_func) {
+    try {
+        return !!getInverse(op_or_func);
+    } catch ( err ) {
+        return false;
+    }
+}
+
 export function getInverse(op_or_func) {
     switch ( op_or_func ) {
         case '+/1':

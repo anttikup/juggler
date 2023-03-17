@@ -28,14 +28,14 @@ export function loadFormula(formulaStr) {
 
     const stack = [];
     for ( let item of rpn ) {
-        //console.log("item:", item, operators[item], isNumber(item));
         if ( operators[item] ) {
-            const operator = operators[item];
-            const arity = operator.arity;
-            const symbol = operator.symbol;
+            const operator = item;
+            const operator_info = operators[item];
+            const arity = operator_info.arity;
+            const symbol = operator_info.symbol;
             const opId = makeId();
 
-            if ( arity === 2 && symbol === '=' ) {
+            if ( operator === "=/2" ) {
                 const op2 = stack.pop();
                 const op1 = stack.pop();
                 //console.log("= (1):", nodes.get(op1));
@@ -48,78 +48,101 @@ export function loadFormula(formulaStr) {
                     nodes.remove(op1);
                 }
                 nodes.remove(opId);
-            } else if ( arity === 2 && (symbol === '-' || symbol === ':') ) {
-                if ( symbol === "-" ) {
-                    nodes.add(makeOperatorNode(opId, '+', '+'));
-                } else if ( symbol === ":" ) {
-                    nodes.add(makeOperatorNode(opId, '·', '·'));
-                }
+            } else if ( operator === "−/2" ) {
+                nodes.add(makeOperatorNode(opId, '+', '+/2'));
                 const op1 = stack.pop();
-                const hub = stack.pop();
+                const trunk = stack.pop();
                 const op2 = makeId();
                 nodes.add(makeValueNode(op2));
                 edges.add(makePartEdge(opId, op1));
                 edges.add(makePartEdge(opId, op2));
-                edges.add(makeWholeEdge(hub, opId, symbol));
+                edges.add(makeWholeEdge(trunk, opId, '+/2'));
                 stack.push(op2);
-            } else if ( arity === 2 && (symbol === '√') ) {
-                nodes.add(makeOperatorNode(opId, '◌ⁿ', '^'));
-                const hub = stack.pop();
+
+            } else if ( operator === '//2' ) {
+                nodes.add(makeOperatorNode(opId, '·', '·/2'));
+                const op1 = stack.pop();
+                const trunk = stack.pop();
+                const op2 = makeId();
+                nodes.add(makeValueNode(op2));
+                edges.add(makePartEdge(opId, op1));
+                edges.add(makePartEdge(opId, op2));
+                edges.add(makeWholeEdge(trunk, opId, '·/2'));
+                stack.push(op2);
+
+            } else if ( operator === '√/2' ) {
+                nodes.add(makeOperatorNode(opId, '◌ⁿ', '^/2'));
+                const trunk = stack.pop();
                 const op1 = stack.pop();
                 const op2 = makeId();
                 nodes.add(makeValueNode(op2));
                 edges.add(makeAEdge(opId, op1));
                 edges.add(makeBEdge(opId, op2));
-                edges.add(makeWholeEdge(hub, opId, symbol));
+                edges.add(makeWholeEdge(trunk, opId, '^/2'));
                 stack.push(op2);
-            } else if ( arity === 2 && (symbol === 'log') ) {
-                nodes.add(makeOperatorNode(opId, '◌ⁿ', '^'));
-                const hub = stack.pop();
+
+            } else if ( operator === 'log/2' ) {
+                nodes.add(makeOperatorNode(opId, '◌ⁿ', '^/2'));
+                const trunk = stack.pop();
                 const op1 = stack.pop();
                 const op2 = makeId();
                 nodes.add(makeValueNode(op2));
                 edges.add(makeBEdge(opId, op1));
                 edges.add(makeAEdge(opId, op2));
-                edges.add(makeWholeEdge(hub, opId, symbol));
+                edges.add(makeWholeEdge(trunk, opId, '^/2'));
                 stack.push(op2);
-            } else if ( arity === 2 && (symbol === '+' || symbol === '·') ) {
-                nodes.add(makeOperatorNode(opId, symbol, symbol));
+
+            } else if ( operator === '+/2' ) {
+                nodes.add(makeOperatorNode(opId, '+', '+/2'));
                 const op1 = stack.pop();
                 const op2 = stack.pop();
                 edges.add(makePartEdge(opId, op2));
                 edges.add(makePartEdge(opId, op1));
                 const valId = makeId();
                 nodes.add(makeValueNode(valId));
-                edges.add(makeWholeEdge(valId, opId, symbol));
+                edges.add(makeWholeEdge(valId, opId, '+/2'));
                 stack.push(valId);
-            } else if ( arity === 2 && (symbol === '^') ) {
-                nodes.add(makeOperatorNode(opId, '◌ⁿ', '^'));
+
+            } else if ( operator === '·/2' ) {
+                nodes.add(makeOperatorNode(opId, '·', '·/2'));
+                const op1 = stack.pop();
+                const op2 = stack.pop();
+                edges.add(makePartEdge(opId, op2));
+                edges.add(makePartEdge(opId, op1));
+                const valId = makeId();
+                nodes.add(makeValueNode(valId));
+                edges.add(makeWholeEdge(valId, opId, '·/2'));
+                stack.push(valId);
+
+            } else if ( operator === '^/2' ) {
+                nodes.add(makeOperatorNode(opId, '◌ⁿ', '^/2'));
                 const op1 = stack.pop();
                 const op2 = stack.pop();
                 edges.add(makeAEdge(opId, op1));
                 edges.add(makeBEdge(opId, op2));
                 const valId = makeId();
                 nodes.add(makeValueNode(valId));
-                edges.add(makeWholeEdge(valId, opId, symbol));
+                edges.add(makeWholeEdge(valId, opId, '^/2'));
                 stack.push(valId);
             } else if ( arity === 2 ) {
-                throw new Error(`Unknown operator: ${symbol}`);
+                throw new Error(`Unknown operator: ${operator}`);
             } else {
                 throw new Error("Not implemented");
             }
         } else if ( functions[item] ) {
-            const func = functions[item];
-            const arity = func.arity;
-            const symbol = func.symbol;
+            const func = item;
+            const funcInfo = functions[item];
+            const arity = funcInfo.arity;
+            const symbol = funcInfo.symbol;
             const funcId = makeId();
 
             if ( arity === 1 ) {
-                nodes.add(makeFunctionNode(funcId, symbol));
+                nodes.add(makeFunctionNode(funcId, symbol, func));
                 const op1 = stack.pop();
                 edges.add(makeNEdge(funcId, op1, 1));
                 const valId = makeId();
                 nodes.add(makeValueNode(valId));
-                edges.add(makeWholeEdge(valId, funcId, symbol));
+                edges.add(makeWholeEdge(valId, funcId, func));
                 stack.push(valId);
             } else {
                 throw new Error("Not implemented");

@@ -1,13 +1,15 @@
 function getOperatorColor(op) {
     switch ( op ) {
-        case '+':
+        case '+/2':
             return '#0abf57';
-        case '·':
+        case '·/2':
             return '#0a57bf';
-        case '^':
+        case '^/2':
             return '#bf0a57';
-        case 'f':
-            return '#57bf0a';
+        case 'sin/1':
+        case 'cos/1':
+        case 'tan/1':
+            return '#570abf';
     }
 
     return '#2b7ce9';
@@ -92,7 +94,6 @@ export function makeOperatorNode(id, text, value) {
         color,
         font: {
             color: 'white',
-            //strokeWidth: 1
             size: 20,
         },
         type: 'operator',
@@ -100,12 +101,16 @@ export function makeOperatorNode(id, text, value) {
     };
 }
 
-export function makeFunctionNode(id, value) {
+export function makeFunctionNode(id, text, value) {
     const color = getOperatorColor(value);
     return {
         id,
-        label: value,
+        label: text,
         color,
+        font: {
+            color: 'white',
+            size: 17,
+        },
         type: 'function',
         data: value
     };

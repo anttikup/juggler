@@ -5,18 +5,13 @@ export const operators = {
         precedence: 10,
         arity: 1
     },
-    "-/1" : {
+    "−/1" : {
         symbol: "-",
         precedence: 10,
         arity: 1
     },
-    "–/1" : {
-        symbol: "–",
-        precedence: 10,
-        arity: 1
-    },
     "√/1" : {
-        symbol: "√",
+        symbol: "sqrt",
         precedence: 10,
         arity: 1
     },
@@ -33,11 +28,6 @@ export const operators = {
         arity: 2
     },
     "√/2" : {
-        symbol: "√",
-        precedence: 6,
-        arity: 2
-    },
-    "root/2" : {
         symbol: "root",
         precedence: 6,
         arity: 2
@@ -47,23 +37,8 @@ export const operators = {
         precedence: 6,
         arity: 2
     },
-    "*/2" : {
-        symbol: "*",
-        precedence: 4,
-        arity: 2
-    },
-    "×/2" : {
-        symbol: "×",
-        precedence: 4,
-        arity: 2
-    },
     "·/2" : {
-        symbol: "·",
-        precedence: 4,
-        arity: 2
-    },
-    ":/2" : {
-        symbol: ":",
+        symbol: "*",
         precedence: 4,
         arity: 2
     },
@@ -77,13 +52,8 @@ export const operators = {
         precedence: 2,
         arity: 2
     },
-    "-/2" : {
+    "−/2" : {
         symbol: "-",
-        precedence: 2,
-        arity: 2
-    },
-    "–/2" : {
-        symbol: "–",
         precedence: 2,
         arity: 2
     },
@@ -97,13 +67,28 @@ export const operators = {
         precedence: 0,
         arity: 2
     },
-    "!=/2"  : {
+    "≠/2"  : {
         symbol: "!=",
         precedence: 0,
         arity: 2
     },
-    "is/2"  : {
-        symbol: "is",
+    "</2"  : {
+        symbol: "<",
+        precedence: 0,
+        arity: 2
+    },
+    ">/2"  : {
+        symbol: ">",
+        precedence: 0,
+        arity: 2
+    },
+    "≤/2"  : {
+        symbol: "<=",
+        precedence: 0,
+        arity: 2
+    },
+    "≥/2"  : {
+        symbol: ">=",
         precedence: 0,
         arity: 2
     },
@@ -115,12 +100,28 @@ export const operators = {
 };
 
 export const functions = {
+    "sin/1" : {
+        symbol: "sin",
+        arity: 1
+    },
+    "arcsin/1" : {
+        symbol: "arcsin",
+        arity: 1
+    },
     "cos/1" : {
         symbol: "cos",
         arity: 1
     },
     "arccos/1" : {
         symbol: "arccos",
+        arity: 1
+    },
+    "tan/1" : {
+        symbol: "tan",
+        arity: 1
+    },
+    "arctan/1" : {
+        symbol: "arctan",
         arity: 1
     },
 
