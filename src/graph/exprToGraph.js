@@ -18,7 +18,7 @@ function isNumber(item) {
 }
 
 
-function moveEdges(from, to, edges) {
+function combineNodes(from, to, edges) {
     console.log("MOVE EDGES:", from, to);
 
     const edges_to_move = edges.get({
@@ -37,6 +37,8 @@ function moveEdges(from, to, edges) {
             console.log("moved", from);
         }
     });
+
+    return to;
 }
 
 
@@ -52,9 +54,9 @@ export function loadFormula(formulaStr) {
     for ( let item of rpn ) {
         if ( operators[item] ) {
             const operator = item;
-            const operator_info = operators[item];
-            const arity = operator_info.arity;
-            const symbol = operator_info.symbol;
+            const operatorInfo = operators[item];
+            const arity = operatorInfo.arity;
+            const symbol = operatorInfo.symbol;
             const opId = makeId();
 
             if ( operator === "=/2" ) {
@@ -62,18 +64,71 @@ export function loadFormula(formulaStr) {
                 const op1 = stack.pop();
                 console.log("= (1) [", op1, "]:", nodes.get(op1));
                 console.log("= (2) [", op2, "]:", nodes.get(op2));
-                if ( nodes.get(op1).data === null ) {
-                    nodes.update({ ...nodes.get(op2), id: op1 });
+                if ( nodes.get(op1).data !== null ) {
+                    stack.push(combineNodes(op2, op1, edges));
                     nodes.remove(op2);
-                    moveEdges(op2, op1, edges);
-                    stack.push(op1);
-                } else {
-                    nodes.update({ ...nodes.get(op1), id: op2 });
+                } else if ( nodes.get(op2).data !== null ) {
+                    stack.push(combineNodes(op1, op2, edges));
                     nodes.remove(op1);
-                    moveEdges(op1, op2, edges);
-                    stack.push(op2);
+                } else {
+                    stack.push(combineNodes(op1, op2, edges));
+                    nodes.remove(op1);
                 }
                 nodes.remove(opId);
+
+            } else if ( operator === '+/1' ) {
+                nodes.add(makeOperatorNode(opId, '+', '+/1'));
+                const op1 = stack.pop();
+                edges.add(makePartEdge(opId, op1));
+                const valId = makeId();
+                nodes.add(makeValueNode(valId));
+                edges.add(makeWholeEdge(valId, opId, '+/1'));
+                stack.push(valId);
+
+            } else if ( operator === '−/1' ) {
+                nodes.add(makeOperatorNode(opId, '+', '+/2'));
+                const op1 = stack.pop();
+                //const trunk = makeId();
+                const op2 = makeId();
+                //nodes.add(makeValueNode(trunk, '0'));
+                nodes.add(makeValueNode(op2));
+                edges.add(makePartEdge(opId, op1));
+                edges.add(makePartEdge(opId, op2));
+                //edges.add(makeWholeEdge(trunk, opId, '+/2'));
+                stack.push(op2);
+
+            } else if ( operator === '+/2' ) {
+                nodes.add(makeOperatorNode(opId, '+', '+/2'));
+                const op1 = stack.pop();
+                const op2 = stack.pop();
+                edges.add(makePartEdge(opId, op2));
+                edges.add(makePartEdge(opId, op1));
+                const valId = makeId();
+                nodes.add(makeValueNode(valId));
+                edges.add(makeWholeEdge(valId, opId, '+/2'));
+                stack.push(valId);
+
+            } else if ( operator === '·/2' ) {
+                nodes.add(makeOperatorNode(opId, '·', '·/2'));
+                const op1 = stack.pop();
+                const op2 = stack.pop();
+                edges.add(makePartEdge(opId, op2));
+                edges.add(makePartEdge(opId, op1));
+                const valId = makeId();
+                nodes.add(makeValueNode(valId));
+                edges.add(makeWholeEdge(valId, opId, '·/2'));
+                stack.push(valId);
+
+            } else if ( operator === '^/2' ) {
+                nodes.add(makeOperatorNode(opId, '◌ⁿ', '^/2'));
+                const op1 = stack.pop();
+                const op2 = stack.pop();
+                edges.add(makeAEdge(opId, op1));
+                edges.add(makeBEdge(opId, op2));
+                const valId = makeId();
+                nodes.add(makeValueNode(valId));
+                edges.add(makeWholeEdge(valId, opId, '^/2'));
+                stack.push(valId);
             } else if ( operator === "−/2" ) {
                 nodes.add(makeOperatorNode(opId, '+', '+/2'));
                 const op1 = stack.pop();
@@ -118,42 +173,11 @@ export function loadFormula(formulaStr) {
                 edges.add(makeWholeEdge(trunk, opId, '^/2'));
                 stack.push(op2);
 
-            } else if ( operator === '+/2' ) {
-                nodes.add(makeOperatorNode(opId, '+', '+/2'));
-                const op1 = stack.pop();
-                const op2 = stack.pop();
-                edges.add(makePartEdge(opId, op2));
-                edges.add(makePartEdge(opId, op1));
-                const valId = makeId();
-                nodes.add(makeValueNode(valId));
-                edges.add(makeWholeEdge(valId, opId, '+/2'));
-                stack.push(valId);
-
-            } else if ( operator === '·/2' ) {
-                nodes.add(makeOperatorNode(opId, '·', '·/2'));
-                const op1 = stack.pop();
-                const op2 = stack.pop();
-                edges.add(makePartEdge(opId, op2));
-                edges.add(makePartEdge(opId, op1));
-                const valId = makeId();
-                nodes.add(makeValueNode(valId));
-                edges.add(makeWholeEdge(valId, opId, '·/2'));
-                stack.push(valId);
-
-            } else if ( operator === '^/2' ) {
-                nodes.add(makeOperatorNode(opId, '◌ⁿ', '^/2'));
-                const op1 = stack.pop();
-                const op2 = stack.pop();
-                edges.add(makeAEdge(opId, op1));
-                edges.add(makeBEdge(opId, op2));
-                const valId = makeId();
-                nodes.add(makeValueNode(valId));
-                edges.add(makeWholeEdge(valId, opId, '^/2'));
-                stack.push(valId);
-            } else if ( arity === 2 ) {
-                throw new Error(`Unknown operator: ${operator}`);
+            } else if ( operator === ';/2' ) {
+                stack.push(opId);
+                console.assert(item === rpn[rpn.length - 1], "Semicolon (;) should be last operator")
             } else {
-                throw new Error("Not implemented");
+                throw new Error(`Unknown operator: ${operator}`);
             }
         } else if ( functions[item] ) {
             const func = item;

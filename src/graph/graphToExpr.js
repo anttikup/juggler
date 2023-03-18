@@ -73,6 +73,9 @@ export function getFormula(network, start) {
                 text(members['r-operand'], output);
                 output.push('^/2');
 
+            } else if ( members['trunk'] === nodeId  && ["+/1", "−/1"].includes(operator) ) {
+                text(members.operands[0], output);
+                output.push(operator);
             } else if ( members['trunk'] === nodeId  && ["·/2", "+/2"].includes(operator) ) {
                 text(members.operands[0], output);
                 text(members.operands[1], output);
@@ -97,8 +100,7 @@ export function getFormula(network, start) {
                 });
                 output.push('//' + members.operands.length);
 
-            } else if ( members['operands'] && members['operands'].includes(nodeId) && operator === "+/2" ) {
-
+            } else if ( members['operands'] && members['operands'].includes(nodeId) && ["+/1", "+/2"].includes(operator) ) {
                 text(members['trunk'], output);
                 members.operands.forEach((member) => {
                     if ( member !== nodeId ) {
@@ -108,15 +110,14 @@ export function getFormula(network, start) {
                 output.push('−/' + members.operands.length);
 
             } else if ( members['trunk'] === nodeId && functions[operator] && isMain(operator) ) {
-                console.log("trunk, ", operator);
                 text(members.operands[0], output);
                 output.push(operator);
 
             } else if ( members.operands && members.operands[0] === nodeId && isMain(operator) ) {
-                console.log("operand, cos");
                 text(members['trunk'], output);
                 output.push(getInverse(operator));
-
+            } else {
+                throw new Error(`Unknown operator: ${operator}`);
             }
 
             added++;
