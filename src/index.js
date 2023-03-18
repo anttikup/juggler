@@ -50,5 +50,10 @@ window.onload = () => {
         }
     };
 
+    document.querySelector('#copy-to-input').onclick = (event) => {
+        input.value = document.querySelector('#output').value;
+        network.setData(loadFormula(input.value));
+    };
+
     network.setData(loadFormula(input.value));
 };
