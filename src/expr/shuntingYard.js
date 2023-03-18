@@ -40,7 +40,7 @@ export function exprToRPN(expr) {
         n_params = 0;
 
     // TODO: luotava automaattisest operaattoreista
-    tokens = expr.split(/(\)|\(|\+|-|–|\*|\/|^|√|<=>|=|,| )/).
+    tokens = expr.split(/(\)|\(|\+|-|–|\*|\/|^|√|<=>|=|,|;| )/).
                   filter(function (a) { return a !== " " && a !== ""; });
 
     for (let i = 0; i < tokens.length; i++) {

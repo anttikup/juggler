@@ -104,4 +104,11 @@ describe("exprToRPN", function () {
         expect(exprToRPN("f(1 + 2, 3 + 4, 5 + 6)")).to.deep.equal([1, 2, "+/2", 3, 4, "+/2", ",/2", 5, 6, "+/2", "f/2"]);
     });
 
+    it("can parse semicolon", function () {
+        expect(exprToRPN("1 ; 2")).to.deep.equal([1, 2, ";/2"]);
+        expect(exprToRPN("1 + 2; 2 + 3")).to.deep.equal([1, 2, "+/2", 2, 3, "+/2", ";/2"]);
+        expect(exprToRPN("y = 1*x + 2; y = 2*x + 3"))
+            .to.deep.equal(["y", 1, "x", "·/2", 2, "+/2", "=/2", "y", 2, "x", "·/2", 3, "+/2", "=/2", ";/2"]);
+    });
+
 });

@@ -96,6 +96,11 @@ export const operators = {
         symbol: "<=>",
         precedence: -1,
         arity: 2
+    },
+    ";/2" : {
+        symbol: ";",
+        precedence: -1,
+        arity: 2
     }
 };
 

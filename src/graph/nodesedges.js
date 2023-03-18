@@ -15,6 +15,14 @@ function getOperatorColor(op) {
     return '#2b7ce9';
 }
 
+function getValueColor(op) {
+    if ( Number(op) === op || op === null ) {
+        return ['#97c2fc', 'black'];
+    } else {
+        return ['black', 'white']
+    }
+}
+
 
 export function makePartEdge(from, to) {
     return {
@@ -70,11 +78,16 @@ export function makeWholeEdge(from, to, parentOp) {
 }
 
 export function makeValueNode(id, value = null) {
+    const [color, fontColor] = getValueColor(value);
     return {
         id,
         label: String(value ?? ' '),
         type: 'value',
-        data: value
+        data: value,
+        color,
+        font: {
+            color: fontColor
+        }
     };
 }
 
