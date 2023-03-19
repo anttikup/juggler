@@ -1,3 +1,6 @@
+import { getEdgeId } from './util.js';
+
+
 function getOperatorColor(op) {
     switch ( op ) {
         case '+/2':
@@ -24,13 +27,18 @@ function getValueColor(op) {
 }
 
 
+export function isUnboundVariable(node) {
+    return node.type === 'value' && !Number(node.data);
+};
+
 export function makePartEdge(from, to) {
     return {
         from,
         to,
         color: '#2b7ce978',
         label: '⊙',
-        role: 'operand'
+        role: 'operand',
+        id: getEdgeId(from, to)
     };
 }
 
@@ -40,7 +48,8 @@ export function makeAEdge(from, to) {
         to,
         color: '#2bc7e978',
         label: 'R',
-        role: 'r-operand'
+        role: 'r-operand',
+        id: getEdgeId(from, to)
     };
 }
 
@@ -50,21 +59,23 @@ export function makeBEdge(from, to) {
         to,
         color: '#b27ce978',
         label: 'L',
-        role: 'l-operand'
+        role: 'l-operand',
+        id: getEdgeId(from, to)
     };
 }
 
-export function makeNEdge(from, to, n) {
+export function makeOrderedEdge(from, to, n) {
     return {
         from,
         to,
         color: '#b27ce978',
         label: String(n),
-        role: 'n-operand'
+        role: 'orderedOperand',
+        id: getEdgeId(from, to)
     };
 }
 
-export function makeWholeEdge(from, to, parentOp) {
+export function makeTrunkEdge(from, to, parentOp) {
     const color = getOperatorColor(parentOp);
     return {
         from,
@@ -73,7 +84,8 @@ export function makeWholeEdge(from, to, parentOp) {
         length: 3,
         width: 5,
         label: '=',
-        role: 'trunk'
+        role: 'trunk',
+        id: getEdgeId(from, to)
     };
 }
 

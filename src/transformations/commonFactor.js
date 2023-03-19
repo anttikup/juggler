@@ -1,64 +1,92 @@
 import { makeId } from '../id.js';
 import {
+    isUnboundVariable,
     makePartEdge,
     makeAEdge,
     makeBEdge,
-    makeWholeEdge,
+    makeTrunkEdge,
     makeValueNode,
-    makeOperatorNode
+    makeOperatorNode,
 } from '../graph/nodesedges.js';
+import { intersection, union } from './set.js';
+import {
+    combineNodes,
+    findLoopingPathsWithRole,
+    getNeighbours,
+    getNeighboursOfType,
+    getMembersByRole,
+    removeEdge,
+    removeEdges,
+} from '../graph/util.js';
 
-const duplicates = arr => {
-    const seen = {};
-    const out = [];
-    for ( let item of arr ) {
-        if ( seen[item] ) {
-            out.push(item);
-        }
-        seen[item] = true;
-    }
-    return out;
-};
+
+
+function getParticipantNodes(network, nodeId) {
+    const { nodes, edges } = network.body.data;
+
+    const paths = findLoopingPathsWithRole(network, nodeId, ['operand', '·/2', 'trunk', 'value', 'operand', '+/2']);
+
+    console.log("paths", paths);
+
+    const multiplications = paths.map(path => path[0]);
+    console.log("multiplications:", multiplications);
+    const otherFactors = multiplications.flatMap(id => getMembersByRole(network, id, 'operand')).filter(id => id !== nodeId);
+    console.log("otherFactors:", otherFactors);
+    const summands = multiplications.flatMap(id => getMembersByRole(network, id, 'trunk')).filter(id => id !== nodeId);
+    console.log("summands:", summands);
+
+    const sumOper = paths[0][paths[0].length - 1];
+    const sumTrunk = getMembersByRole(network, sumOper, 'trunk')[0];
+
+
+    return {
+        commonFactor: nodeId,
+        otherFactors,
+        multiplications,
+        sumOper,
+        sumTrunk,
+        summands,
+    };
+}
+
 
 
 export function extractCommonFactor(network, nodeId) {
     const { nodes, edges } = network.body.data;
     const node = nodes.get(nodeId);
+    if ( isUnboundVariable(node) ) {
 
-    if ( node.data === '+' ) {
-        const connected1 = network.getConnectedEdges(nodeId);
-        //console.log("connected 1:", connected1);
-        const tosummands = connected1.filter(id => edges.get(id).role === 'operand');
-        //console.log("tosummands:", tosummands);
-        const summands = tosummands.flatMap(id => network.getConnectedNodes(id, 'to')).filter(id => id !== nodeId);
-        //console.log("summands:", summands);
-        const multiplications = summands.flatMap(id => network.getConnectedNodes(id, 'to'));
-        //console.log("multiplications:", multiplications);
-        const factors = multiplications.flatMap(id => network.getConnectedNodes(id, 'to'));
-        //console.log("factors:", factors);
-        const commonFactor = duplicates(factors);
-        if ( commonFactor.length === 0 ) {
-            return;
-        }
-        //console.log(commonFactor[0]);
-        const otherFactors = factors.filter(factor => factor !== commonFactor[0]);
+        const {
+            commonFactor,
+            otherFactors,
+            multiplications,
+            sumOper,
+            sumTrunk,
+            summands
+        } = getParticipantNodes(network, nodeId);
 
-        nodes.update(makeOperatorNode(node.id, '·'));
-        const plus = makeId();
-        nodes.add(makeOperatorNode(plus, '+'));
-        const helper = makeId();
-        nodes.add(makeValueNode(helper));
 
-        summands.forEach(id => nodes.remove(id));
-        multiplications.forEach(id => nodes.remove(id));
 
-        edges.add(makePartEdge(node.id, commonFactor[0]));
-        edges.add(makePartEdge(node.id, helper));
-        edges.add(makeWholeEdge(helper, plus));
-        edges.add(makePartEdge(plus, otherFactors[0]));
-        edges.add(makePartEdge(plus, otherFactors[1]));
+        nodes.remove(summands);
 
-        //const connected2 = connected1.map(id => network.getConnectedNodes(id)).filter(id => id !== node.id);
-        //console.log("connected 2:", connected2);
+        removeEdges(network, sumOper);
+        multiplications.forEach(multiplication => removeEdges(network, multiplication));
+
+        const newMult = combineNodes(network, ...multiplications);
+
+
+        console.log("mults:", multiplications);
+
+
+        const mid = makeId();
+        nodes.add(makeValueNode(mid));
+
+        edges.add(makeTrunkEdge(newMult, sumTrunk, '·/2'));
+        edges.add(makePartEdge(commonFactor, newMult));
+        edges.add(makePartEdge(mid, newMult));
+        edges.add(makeTrunkEdge(sumOper, mid, '+/2'));
+        edges.add(makePartEdge(otherFactors[0], sumOper));
+        edges.add(makePartEdge(otherFactors[1], sumOper));
+
     }
 };

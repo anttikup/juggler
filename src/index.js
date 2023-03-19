@@ -4,24 +4,28 @@ import "vis-network/styles/vis-network.css";
 
 import { getFormula, loadFormula } from './graph/index.js';
 import { extractCommonFactor } from './transformations/commonFactor.js';
+import { disableUnknown } from './transformations/disableUnknown.js';
 
 
 
 
 window.onload = () => {
     var options = {};
-
-    // create a network
     var container = document.getElementById('mynetwork');
 
     const network = new Network(container, {}, options);
+
+    window.vis = network;
     network.on( 'click', function(properties) {
         const nodes = network.body.data.nodes;
 
         const ids = properties.nodes;
+        console.log("selected:", ids);
+
         if ( ids.length !== 1 ) {
             return;
         }
+
 
         const povId = ids[0];
         const node = nodes.get(povId);
@@ -53,6 +57,14 @@ window.onload = () => {
     document.querySelector('#copy-to-input').onclick = (event) => {
         input.value = document.querySelector('#output').value;
         network.setData(loadFormula(input.value));
+    };
+
+    document.querySelector('#disable').onclick = (event) => {
+        const ids = network.getSelectedNodes();
+        ids.forEach((id) => {
+            disableUnknown(network, id);
+        });
+
     };
 
     network.setData(loadFormula(input.value));

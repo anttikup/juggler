@@ -40,7 +40,7 @@ export function getFormula(network, start) {
         for ( let conn of conns ) {
             const role = edges.get(conn).role;
             const children = network.getConnectedNodes(conn).filter(id => id !== nodeId);
-            if ( role === "operand" || role === "n-operand" ) {
+            if ( role === "operand" || role === "orderedOperand" ) {
                 if ( !members.operands ) {
                     members.operands = [];
                 }
