@@ -1,0 +1,7 @@
+KE = ½ * m_e * v ^ 2 = h * f - W; f = c / lambda
+
+wrong result:
+      v = 2 root ((h * c / lambda - W) / ½ * m_e)
+
+should be:
+      v = 2 root ((h * c / lambda - W) / (½ * m_e))
