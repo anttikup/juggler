@@ -2,11 +2,20 @@ import { DataSet } from "vis-data";
 import { Network } from "vis-network";
 import "vis-network/styles/vis-network.css";
 
-import { getFormula, loadFormula } from './graph/index.js';
+import { exprToRPN, rpnToExpr, functions } from './expr/index.js';
+import { graphToRPN, rpnToGraph } from './graph/index.js';
 import { extractCommonFactor } from './transformations/commonFactor.js';
 import { disableUnknown } from './transformations/disableUnknown.js';
 
+const loadFormula = formula => {
+    const rpn = exprToRPN(formula);
+    return rpnToGraph(rpn);
+};
 
+const outputFormula = (network, povId) => {
+    const rpn = graphToRPN(network, povId);
+    document.querySelector('#output').value = rpnToExpr(rpn);
+};
 
 
 window.onload = () => {
@@ -15,7 +24,8 @@ window.onload = () => {
 
     const network = new Network(container, {}, options);
 
-    window.vis = network;
+    window.vis = network; // for debugging
+
     network.on( 'click', function(properties) {
         const nodes = network.body.data.nodes;
 
@@ -34,8 +44,8 @@ window.onload = () => {
         }
 
 
+        outputFormula(network, povId);
 
-        document.querySelector('#output').value = getFormula(network, povId);
     });
 
     const button = document.querySelector('#common');

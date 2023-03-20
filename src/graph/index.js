@@ -1,2 +1,2 @@
-export { loadFormula } from './exprToGraph.js';
-export { getFormula } from './graphToExpr.js';
+export { rpnToGraph } from './exprToGraph.js';
+export { graphToRPN } from './graphToExpr.js';

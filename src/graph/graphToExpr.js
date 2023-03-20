@@ -1,8 +1,8 @@
-import { rpnToExpr, functions } from '../expr/index.js';
 import { isMain, getInverse } from './inverse.js';
+import { functions } from '../expr/index.js';
 
 
-export function getFormula(network, start) {
+export function graphToRPN(network, start) {
     const visited = {};
     const nodes = network.body.data.nodes;
     const edges = network.body.data.edges;
@@ -14,20 +14,20 @@ export function getFormula(network, start) {
     // if node has a name
     if ( nodeinfo.data !== null ) {
         rpn.push(nodes.get(start).data);
-        getFormulaRecursive(start, rpn);
+        graphToRPNRecursive(start, rpn);
         rpn.push('=/2');
     } else {
-        getFormulaRecursive(start, rpn);
+        graphToRPNRecursive(start, rpn);
     }
 
-    console.log("getFormula: RPN:", rpn);
-    return rpnToExpr(rpn);
+    console.log("graphToRPN: RPN:", rpn);
+    return rpn;
 
 
     function text(nodeId, output) {
         const node = nodes.get(nodeId);
         if ( node.data === null ) {
-            output += getFormulaRecursive(nodeId, output);
+            output += graphToRPNRecursive(nodeId, output);
         } else {
             output.push(node.data);
         }
@@ -54,19 +54,19 @@ export function getFormula(network, start) {
         return members;
     }
 
-    function getFormulaRecursive(nodeId, output) {
-        const relations = network.getConnectedNodes(nodeId);
+    function graphToRPNRecursive(nodeId, output) {
+        const neighbours = network.getConnectedNodes(nodeId);
         let added = 0;
-        for ( let relation of relations ) {
-            if ( visited[relation] ) {
+        for ( let neighbour of neighbours ) {
+            if ( visited[neighbour] ) {
                 continue;
             }
 
-            visited[relation] = true;
+            visited[neighbour] = true;
 
-            const operator = nodes.get(relation).data;
-            const members = getMembersOfRelation(relation);
-            console.log("operator:", operator, "members:", members, "node:", nodeId);
+            const operator = nodes.get(neighbour).data;
+            const members = getMembersOfRelation(neighbour);
+            //console.log("operator:", operator, "members:", members, "node:", nodeId);
 
             if ( members['trunk'] === nodeId  && operator === "^/2" ) {
                 text(members['l-operand'], output);

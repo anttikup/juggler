@@ -43,8 +43,7 @@ function combineNodes(from, to, edges) {
 
 
 
-export function loadFormula(formulaStr) {
-    const rpn = exprToRPN(formulaStr);
+export function rpnToGraph(rpn) {
     console.log("loadFormula: RPN:", rpn);
 
     const nodes = new DataSet();
