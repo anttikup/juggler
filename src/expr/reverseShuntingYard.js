@@ -77,10 +77,11 @@ export function rpnToExpr(rpn) {
 
             console.assert ( arity <= stack.length, "Not enough parameters" );
 
-            for ( let j = 0; j < arity; j++ ) {
+            for ( let j = 0; j < arity - 1; j++ ) {
                 const item = stack.pop();
+
                 if ( item.precedence !== undefined ) {
-                    if ( item.precedence < precedence ) {
+                    if ( item.precedence <= precedence ) {
                         params[arity-j-1] = "(" + item.text + ")";
                     } else {
                         params[arity-j-1] = item.text;
@@ -89,6 +90,19 @@ export function rpnToExpr(rpn) {
                     params[arity-j-1] = item.text;
                 }
             }
+
+            const lastParam = stack.pop();
+            if ( lastParam.precedence !== undefined ) {
+                if ( lastParam.precedence < precedence ) {
+                    params[0] = "(" + lastParam.text + ")";
+                } else {
+                    params[0] = lastParam.text;
+                }
+            } else {
+                params[0] = lastParam.text;
+            }
+
+
 
             if ( arity === 1 ) {
                 stack.push({

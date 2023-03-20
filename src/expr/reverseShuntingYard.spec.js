@@ -49,6 +49,17 @@ describe("rpnToExpr", function () {
         expect(rpnToExpr([1, 2, 3, "//2", "^/2"])).to.equal("1 ^ (2 / 3)");
     });
 
+    it("can construct parenthesized expressions with same precedence operators", function () {
+        expect(rpnToExpr([24, 2, 3, "·/2", "//2"])).to.equal("24 / (2 * 3)");
+        expect(rpnToExpr([24, 2, "·/2", 3, "//2"])).to.equal("24 * 2 / 3");
+
+        expect(rpnToExpr([2, 3, 2, "^/2", "√/2"])).to.equal("2 root (3 ^ 2)");
+        expect(rpnToExpr([24, 2, "^/2", 3, "√/2"])).to.equal("24 ^ 2 root 3");
+
+        expect(rpnToExpr([2, 3, 2, "^/2", "log/2"])).to.equal("2 log (3 ^ 2)");
+        expect(rpnToExpr([24, 2, "^/2", 3, "log/2"])).to.equal("24 ^ 2 log 3");
+    });
+
     it("can construct simple functions", function () {
         expect(rpnToExpr([1, "cos/1"])).to.equal("cos(1)");
         expect(rpnToExpr(["x", "cos/1"])).to.equal("cos(x)");
