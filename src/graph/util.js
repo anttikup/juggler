@@ -92,7 +92,7 @@ export function getNeighboursOfType(network, nodeId, type) {
 
     const nodeIds = network.getConnectedNodes(nodeId);
     const res = nodes.get(nodeIds).filter(node => node.data === type);
-    console.log("Found neighbours of type", type, ":", res);
+    //console.log("Found neighbours of type", type, ":", res);
 
     return res;
 };
