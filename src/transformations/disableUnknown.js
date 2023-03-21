@@ -24,6 +24,39 @@ const duplicates = arr => {
 export function disableUnknown(network, nodeId) {
     const { nodes, edges } = network.body.data;
     const node = nodes.get(nodeId);
-    node.value = null;
-    nodes.update(makeValueNode(node.id));
+    if ( !node.name ) {
+        throw new Error("Not an unknown");
+    }
+    if ( network.getConnectedEdges(nodeId).length < 2 ) {
+        throw new Error("Node must be connected to at least two nodes");
+    }
+
+    nodes.update(makeValueNode(node.id, null, node.name));
+
+    console.log(nodes.get(node.id));
+};
+
+
+export function enableUnknown(network, nodeId) {
+    const { nodes, edges } = network.body.data;
+    const node = nodes.get(nodeId);
+
+    nodes.update(makeValueNode(node.id, node.name, node.name));
+};
+
+export function toggleEnabled(network, nodeId) {
+    const { nodes, edges } = network.body.data;
+    const node = nodes.get(nodeId);
+    if ( !node.name ) {
+        throw new Error("Not an unknown");
+    }
+
+    if ( node.data ) {
+        console.log("disable");
+        disableUnknown(network, nodeId);
+    } else {
+        console.log("enable");
+
+        enableUnknown(network, nodeId);
+    }
 };
