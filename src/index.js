@@ -5,7 +5,7 @@ import "vis-network/styles/vis-network.css";
 import { exprToRPN, rpnToExpr, functions } from './expr/index.js';
 import { graphToRPN, rpnToGraph } from './graph/index.js';
 import { extractCommonFactor } from './transformations/commonFactor.js';
-import { disableUnknown } from './transformations/disableUnknown.js';
+import { toggleEnabled } from './transformations/disableUnknown.js';
 
 const loadFormula = formula => {
     const rpn = exprToRPN(formula);
@@ -72,7 +72,7 @@ window.onload = () => {
     document.querySelector('#disable').onclick = (event) => {
         const ids = network.getSelectedNodes();
         ids.forEach((id) => {
-            disableUnknown(network, id);
+            toggleEnabled(network, id);
         });
 
     };

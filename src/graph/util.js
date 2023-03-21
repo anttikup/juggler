@@ -1,3 +1,7 @@
+export function isNumber(val) {
+    return Number(val) === val;
+};
+
 /**
  * Move one end of an edge from `oldNodeId` to `newNodeId`.
  *
