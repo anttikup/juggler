@@ -1,6 +1,6 @@
 # Juggler
 
-Juggler is a program to enter equations and look at them from different view points. It uses the [Vis library](https://visjs.github.io/vis-network/docs/network/index.html) to display the equations as a graph. You can then select a variable to see the equation from there.
+[Juggler](https://anttikup.github.io/juggler/) is a program to enter equations and look at them from different view points. It uses the [Vis library](https://visjs.github.io/vis-network/docs/network/index.html) to display the equations as a graph. You can then select a variable to see the equation from there.
 
 
 ## How to contribute
