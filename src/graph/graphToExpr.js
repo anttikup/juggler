@@ -69,8 +69,8 @@ export function graphToRPN(network, start) {
             //console.log("operator:", operator, "members:", members, "node:", nodeId);
 
             if ( members['trunk'] === nodeId  && operator === "^/2" ) {
-                text(members['l-operand'], output);
-                text(members['r-operand'], output);
+                text(members.operands[0], output);
+                text(members.operands[1], output);
                 output.push('^/2');
 
             } else if ( members['trunk'] === nodeId  && ["+/1", "−/1"].includes(operator) ) {
@@ -80,13 +80,13 @@ export function graphToRPN(network, start) {
                 text(members.operands[0], output);
                 text(members.operands[1], output);
                 output.push(operator);
-            } else if ( members['l-operand'] === nodeId && operator === "^/2" ) {
-                text(members['r-operand'], output);
+            } else if ( members.operands[0] === nodeId && operator === "^/2" ) {
+                text(members.operands[1], output);
                 text(members['trunk'], output);
                 output.push('√/2');
 
-            } else if ( members['r-operand'] === nodeId && operator === "^/2" ) {
-                text(members['l-operand'], output);
+            } else if ( members.operands[1] === nodeId && operator === "^/2" ) {
+                text(members.operands[0], output);
                 text(members['trunk'], output);
                 output.push('log/2');
 

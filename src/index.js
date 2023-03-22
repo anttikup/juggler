@@ -1,34 +1,23 @@
 import { DataSet } from "vis-data";
-import { Network } from "vis-network";
 import "vis-network/styles/vis-network.css";
 
+import Graph from "./graph/index.js";
 import { exprToRPN, rpnToExpr, functions } from './expr/index.js';
-import { graphToRPN, rpnToGraph } from './graph/index.js';
 import { extractCommonFactor } from './transformations/commonFactor.js';
 import { toggleEnabled } from './transformations/disableUnknown.js';
 
-const loadFormula = formula => {
-    const rpn = exprToRPN(formula);
-    return rpnToGraph(rpn);
-};
-
-const outputFormula = (network, povId) => {
-    const rpn = graphToRPN(network, povId);
-    document.querySelector('#output').value = rpnToExpr(rpn);
-};
-
 
 window.onload = () => {
-    var options = {};
-    var container = document.getElementById('mynetwork');
+    const container = document.getElementById('mynetwork');
+    const graph = new Graph(container);
+    const formulaInput = document.querySelector('#formula');
+    const formulaOutput = document.querySelector('#output');
 
-    const network = new Network(container, {}, options);
+    graph.setRPN(exprToRPN(formulaInput.value));
 
-    window.vis = network; // for debugging
+    window.network = graph.vis; // for debugging
 
-    network.on( 'click', function(properties) {
-        const nodes = network.body.data.nodes;
-
+    graph.on( 'click', (properties) => {
         const ids = properties.nodes;
         console.log("selected:", ids);
 
@@ -36,46 +25,40 @@ window.onload = () => {
             return;
         }
 
-
         const povId = ids[0];
-        const node = nodes.get(povId);
+        const node = graph.nodes.get(povId);
         if ( node.type !== "value" ) {
             return;
         }
 
-
-        outputFormula(network, povId);
-
+        const rpn = graph.getRPN(povId);
+        formulaOutput.value = rpnToExpr(rpn);
     });
 
-    const button = document.querySelector('#common');
-    button.onclick = (event) => {
-        const ids = network.getSelectedNodes();
-        extractCommonFactor(network, ids[0]);
+    document.querySelector('#common').onclick = (event) => {
+        const ids = graph.getSelectedNodes();
+        extractCommonFactor(graph.vis, ids[0]);
     };
 
-    const input = document.querySelector('#formula');
-    input.onkeypress = (event) => {
-        //console.log(event);
+    document.querySelector('#formula').onkeypress = (event) => {
         switch ( event.keyCode ) {
             case 13:
-                network.setData(loadFormula(event.target.value));
+                graph.setRPN(exprToRPN(event.target.value));
                 break;
         }
     };
 
     document.querySelector('#copy-to-input').onclick = (event) => {
-        input.value = document.querySelector('#output').value;
-        network.setData(loadFormula(input.value));
+        formulaInput.value = document.querySelector('#output').value;
+        graph.setRPN(exprToRPN(formulaInput.value));
     };
 
     document.querySelector('#disable').onclick = (event) => {
-        const ids = network.getSelectedNodes();
+        const ids = graph.getSelectedNodes();
         ids.forEach((id) => {
-            toggleEnabled(network, id);
+            toggleEnabled(graph, id);
         });
 
     };
 
-    network.setData(loadFormula(input.value));
 };
