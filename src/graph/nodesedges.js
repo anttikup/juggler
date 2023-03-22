@@ -1,4 +1,4 @@
-import { getEdgeId } from './util.js';
+import { getEdgeId, isNumber } from './util.js';
 
 
 function getOperatorColor(op) {
@@ -89,13 +89,14 @@ export function makeTrunkEdge(from, to, parentOp) {
     };
 }
 
-export function makeValueNode(id, value = null) {
+export function makeValueNode(id, value = null, name = null) {
     const [color, fontColor] = getValueColor(value);
     return {
         id,
-        label: String(value ?? ' '),
+        label: String(value ?? (name || ' ')),
         type: 'value',
         data: value,
+        name: isNumber(value) ? null : (name || value),
         color,
         font: {
             color: fontColor
