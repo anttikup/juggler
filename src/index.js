@@ -7,6 +7,9 @@ import { graphToRPN, rpnToGraph } from './graph/index.js';
 import { extractCommonFactor } from './transformations/commonFactor.js';
 import { toggleEnabled } from './transformations/disableUnknown.js';
 
+import "./index.css";
+
+
 const loadFormula = formula => {
     const rpn = exprToRPN(formula);
     return rpnToGraph(rpn);
