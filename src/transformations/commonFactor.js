@@ -1,11 +1,8 @@
 import { makeId } from '../id.js';
 import {
-    isUnboundVariable,
-    makePartEdge,
-    makeAEdge,
-    makeBEdge,
-    makeTrunkEdge,
-} from '../graph/nodesedges.js';
+    OperandEdge,
+    TrunkEdge,
+} from '../graph/edges.js';
 import {
     ValueNode
 } from '../graph/nodes.js';
@@ -15,6 +12,7 @@ import {
     findLoopingPathsWithRole,
     getMembersByRole,
     removeEdges,
+    isNumber,
 } from '../graph/util.js';
 
 
@@ -48,6 +46,9 @@ function getParticipantNodes(network, nodeId) {
 }
 
 
+function isUnboundVariable(node) {
+    return node.name !== null && node.data !== null && !isNumber(node.data);
+}
 
 export function extractCommonFactor(network, nodeId) {
     const { nodes, edges } = network.body.data;
@@ -79,12 +80,12 @@ export function extractCommonFactor(network, nodeId) {
         const mid = makeId();
         nodes.add(new ValueNode(mid));
 
-        edges.add(makeTrunkEdge(newMult, sumTrunk, '·/2'));
-        edges.add(makePartEdge(commonFactor, newMult));
-        edges.add(makePartEdge(mid, newMult));
-        edges.add(makeTrunkEdge(sumOper, mid, '+/2'));
-        edges.add(makePartEdge(otherFactors[0], sumOper));
-        edges.add(makePartEdge(otherFactors[1], sumOper));
+        edges.add(new TrunkEdge(newMult, sumTrunk, '·/2'));
+        edges.add(new OperandEdge(commonFactor, newMult));
+        edges.add(new OperandEdge(mid, newMult));
+        edges.add(new TrunkEdge(sumOper, mid, '+/2'));
+        edges.add(new OperandEdge(otherFactors[0], sumOper));
+        edges.add(new OperandEdge(otherFactors[1], sumOper));
 
     }
 };

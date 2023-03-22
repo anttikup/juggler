@@ -3,22 +3,38 @@ import {
     ValueNode
 } from '../graph/nodes.js';
 
-const duplicates = arr => {
-    const seen = {};
-    const out = [];
-    for ( let item of arr ) {
-        if ( seen[item] ) {
-            out.push(item);
-        }
-        seen[item] = true;
+
+export function disableUnknown(graph, nodeId) {
+    const node = graph.nodes.get(nodeId);
+    if ( !node.name ) {
+        throw new Error("Not an unknown");
     }
-    return out;
+    if ( graph.getConnectedEdges(nodeId).length < 2 ) {
+        throw new Error("Node must be connected to at least two nodes");
+    }
+
+    graph.nodes.update(ValueNode.getBridgeEnabled(node));
 };
 
 
-export function disableUnknown(network, nodeId) {
-    const { nodes, edges } = network.body.data;
-    const node = nodes.get(nodeId);
-    node.value = null;
-    nodes.update(new ValueNode(node.id));
+export function enableUnknown(graph, nodeId) {
+    const node = graph.nodes.get(nodeId);
+
+    graph.nodes.update(ValueNode.getBridgeDisabled(node));
+};
+
+export function toggleEnabled(graph, nodeId) {
+    const node = graph.nodes.get(nodeId);
+    if ( !node.name ) {
+        throw new Error("Not an unknown");
+    }
+
+    if ( node.data ) {
+        console.log("disable");
+        disableUnknown(graph, nodeId);
+    } else {
+        console.log("enable");
+
+        enableUnknown(graph, nodeId);
+    }
 };

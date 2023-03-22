@@ -4,7 +4,7 @@ import "vis-network/styles/vis-network.css";
 import Graph from "./graph/index.js";
 import { exprToRPN, rpnToExpr, functions } from './expr/index.js';
 import { extractCommonFactor } from './transformations/commonFactor.js';
-import { disableUnknown } from './transformations/disableUnknown.js';
+import { toggleEnabled } from './transformations/disableUnknown.js';
 
 
 window.onload = () => {
@@ -56,7 +56,7 @@ window.onload = () => {
     document.querySelector('#disable').onclick = (event) => {
         const ids = graph.getSelectedNodes();
         ids.forEach((id) => {
-            disableUnknown(graph.vis, id);
+            toggleEnabled(graph, id);
         });
 
     };

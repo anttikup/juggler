@@ -8,4 +8,17 @@ export const operatorColors = {
 };
 
 export const numberColors = { nodeColor: '#97c2fc', textColor: 'black' };
+export const equalityColors = { nodeColor: '#97c2fc', textColor: 'black' };
 export const namedVariableColors = { nodeColor: 'black', textColor: 'white' };
+
+export const namedVariableDisabledColors = equalityColors;
+
+
+export function getOperatorColors(op) {
+    const colors = operatorColors[op];
+    if ( colors ) {
+        return colors;
+    }
+
+    return { nodeColor: null, textColor: null };
+};

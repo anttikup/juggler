@@ -35,4 +35,8 @@ export default class Graph {
         return this.vis.body.data.edges;
     }
 
+    getConnectedEdges(node) {
+        return this.vis.getConnectedEdges(node);
+    }
+
 };
