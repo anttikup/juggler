@@ -6,6 +6,7 @@ import { exprToRPN, rpnToExpr, functions } from './expr/index.js';
 import { extractCommonFactor } from './transformations/commonFactor.js';
 import { toggleEnabled } from './transformations/disableUnknown.js';
 
+import "./index.css";
 
 window.onload = () => {
     const container = document.getElementById('mynetwork');
