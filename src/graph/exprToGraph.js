@@ -7,15 +7,17 @@ import {
     makeBEdge,
     makeOrderedEdge,
     makeTrunkEdge,
-    makeValueNode,
-    makeOperatorNode,
-    makeFunctionNode
 } from './nodesedges.js';
 import { makeId } from '../id.js';
 
-function isNumber(item) {
-    return (Number(item) === item);
-}
+import {
+    ValueNode,
+    OperatorNode,
+    FunctionNode,
+} from './nodes.js';
+
+import { isNumber } from './util.js';
+
 
 
 function combineNodes(from, to, edges) {
@@ -76,97 +78,97 @@ export function rpnToGraph(rpn) {
                 nodes.remove(opId);
 
             } else if ( operator === '+/1' ) {
-                nodes.add(makeOperatorNode(opId, '+', '+/1'));
+                nodes.add(new OperatorNode(opId, '+', '+/1'));
                 const op1 = stack.pop();
                 edges.add(makePartEdge(op1, opId));
                 const valId = makeId();
-                nodes.add(makeValueNode(valId));
+                nodes.add(new ValueNode(valId));
                 edges.add(makeTrunkEdge(valId, opId, '+/1'));
                 stack.push(valId);
 
             } else if ( operator === '−/1' ) {
-                nodes.add(makeOperatorNode(opId, '+', '+/2'));
+                nodes.add(new OperatorNode(opId, '+', '+/2'));
                 const op1 = stack.pop();
                 //const trunk = makeId();
                 const op2 = makeId();
-                //nodes.add(makeValueNode(trunk, '0'));
-                nodes.add(makeValueNode(op2));
+                //nodes.add(new ValueNode(trunk, '0'));
+                nodes.add(new ValueNode(op2));
                 edges.add(makePartEdge(op1, opId));
                 edges.add(makePartEdge(op2, opId));
                 //edges.add(makeTrunkEdge(trunk, opId, '+/2'));
                 stack.push(op2);
 
             } else if ( operator === '+/2' ) {
-                nodes.add(makeOperatorNode(opId, '+', '+/2'));
+                nodes.add(new OperatorNode(opId, '+', '+/2'));
                 const op1 = stack.pop();
                 const op2 = stack.pop();
                 edges.add(makePartEdge(op2, opId));
                 edges.add(makePartEdge(op1, opId));
                 const valId = makeId();
-                nodes.add(makeValueNode(valId));
+                nodes.add(new ValueNode(valId));
                 edges.add(makeTrunkEdge(valId, opId, '+/2'));
                 stack.push(valId);
 
             } else if ( operator === '·/2' ) {
-                nodes.add(makeOperatorNode(opId, '·', '·/2'));
+                nodes.add(new OperatorNode(opId, '·', '·/2'));
                 const op1 = stack.pop();
                 const op2 = stack.pop();
                 edges.add(makePartEdge(op2, opId));
                 edges.add(makePartEdge(op1, opId));
                 const valId = makeId();
-                nodes.add(makeValueNode(valId));
+                nodes.add(new ValueNode(valId));
                 edges.add(makeTrunkEdge(valId, opId, '·/2'));
                 stack.push(valId);
 
             } else if ( operator === '^/2' ) {
-                nodes.add(makeOperatorNode(opId, '◌ⁿ', '^/2'));
+                nodes.add(new OperatorNode(opId, '◌ⁿ', '^/2'));
                 const op1 = stack.pop();
                 const op2 = stack.pop();
                 edges.add(makeAEdge(op1, opId));
                 edges.add(makeBEdge(op2, opId));
                 const valId = makeId();
-                nodes.add(makeValueNode(valId));
+                nodes.add(new ValueNode(valId));
                 edges.add(makeTrunkEdge(valId, opId, '^/2'));
                 stack.push(valId);
             } else if ( operator === "−/2" ) {
-                nodes.add(makeOperatorNode(opId, '+', '+/2'));
+                nodes.add(new OperatorNode(opId, '+', '+/2'));
                 const op1 = stack.pop();
                 const trunk = stack.pop();
                 const op2 = makeId();
-                nodes.add(makeValueNode(op2));
+                nodes.add(new ValueNode(op2));
                 edges.add(makePartEdge(op1, opId));
                 edges.add(makePartEdge(op2, opId));
                 edges.add(makeTrunkEdge(trunk, opId, '+/2'));
                 stack.push(op2);
 
             } else if ( operator === '//2' ) {
-                nodes.add(makeOperatorNode(opId, '·', '·/2'));
+                nodes.add(new OperatorNode(opId, '·', '·/2'));
                 const op1 = stack.pop();
                 const trunk = stack.pop();
                 const op2 = makeId();
-                nodes.add(makeValueNode(op2));
+                nodes.add(new ValueNode(op2));
                 edges.add(makePartEdge(op1, opId));
                 edges.add(makePartEdge(op2, opId));
                 edges.add(makeTrunkEdge(trunk, opId, '·/2'));
                 stack.push(op2);
 
             } else if ( operator === '√/2' ) {
-                nodes.add(makeOperatorNode(opId, '◌ⁿ', '^/2'));
+                nodes.add(new OperatorNode(opId, '◌ⁿ', '^/2'));
                 const trunk = stack.pop();
                 const op1 = stack.pop();
                 const op2 = makeId();
-                nodes.add(makeValueNode(op2));
+                nodes.add(new ValueNode(op2));
                 edges.add(makeAEdge(op1, opId));
                 edges.add(makeBEdge(op2, opId));
                 edges.add(makeTrunkEdge(trunk, opId, '^/2'));
                 stack.push(op2);
 
             } else if ( operator === 'log/2' ) {
-                nodes.add(makeOperatorNode(opId, '◌ⁿ', '^/2'));
+                nodes.add(new OperatorNode(opId, '◌ⁿ', '^/2'));
                 const trunk = stack.pop();
                 const op1 = stack.pop();
                 const op2 = makeId();
-                nodes.add(makeValueNode(op2));
+                nodes.add(new ValueNode(op2));
                 edges.add(makeBEdge(op1, opId));
                 edges.add(makeAEdge(op2, opId));
                 edges.add(makeTrunkEdge(trunk, opId, '^/2'));
@@ -186,11 +188,11 @@ export function rpnToGraph(rpn) {
             const funcId = makeId();
 
             if ( arity === 1 ) {
-                nodes.add(makeFunctionNode(funcId, symbol, func));
+                nodes.add(new FunctionNode(funcId, symbol, func));
                 const op1 = stack.pop();
                 edges.add(makeOrderedEdge(op1, funcId, 1));
                 const valId = makeId();
-                nodes.add(makeValueNode(valId));
+                nodes.add(new ValueNode(valId));
                 edges.add(makeTrunkEdge(valId, funcId, func));
                 stack.push(valId);
             } else {
@@ -198,13 +200,13 @@ export function rpnToGraph(rpn) {
             }
         } else if ( isNumber(item) ) {
             const valId = makeId();
-            nodes.add(makeValueNode(valId, item));
+            nodes.add(new ValueNode(valId, item));
             stack.push(valId);
             //console.log("create val", valId);
         } else {
             const symId = item;
             if ( !nodes.get(symId) ) {
-                nodes.add(makeValueNode(item, item));
+                nodes.add(new ValueNode(item, item));
                 //console.log("create sym", symId);
             }
             stack.push(symId);

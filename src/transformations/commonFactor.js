@@ -5,17 +5,15 @@ import {
     makeAEdge,
     makeBEdge,
     makeTrunkEdge,
-    makeValueNode,
-    makeOperatorNode,
 } from '../graph/nodesedges.js';
-import { intersection, union } from './set.js';
+import {
+    ValueNode
+} from '../graph/nodes.js';
+
 import {
     combineNodes,
     findLoopingPathsWithRole,
-    getNeighbours,
-    getNeighboursOfType,
     getMembersByRole,
-    removeEdge,
     removeEdges,
 } from '../graph/util.js';
 
@@ -79,7 +77,7 @@ export function extractCommonFactor(network, nodeId) {
 
 
         const mid = makeId();
-        nodes.add(makeValueNode(mid));
+        nodes.add(new ValueNode(mid));
 
         edges.add(makeTrunkEdge(newMult, sumTrunk, '·/2'));
         edges.add(makePartEdge(commonFactor, newMult));

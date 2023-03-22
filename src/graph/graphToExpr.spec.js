@@ -4,15 +4,18 @@ import { Network } from "vis-network";
 import { expect } from "../testconfig.js";
 import NetworkStub from "../test/NetworkStub.js";
 import {
-    makeFunctionNode,
-    makeOperatorNode,
-    makeValueNode,
     makeTrunkEdge,
     makePartEdge,
     makeAEdge,
     makeBEdge,
     makeOrderedEdge,
 } from "./nodesedges.js";
+
+import {
+    ValueNode,
+    OperatorNode,
+    FunctionNode,
+} from './nodes.js';
 
 import { graphToRPN } from './graphToExpr.js';
 
@@ -31,10 +34,10 @@ describe("graphToRPN", function () {
 
         describe("plus equation" ,function () {
             beforeEach(() => {
-                nodes.add(makeValueNode(1, 1));
-                nodes.add(makeValueNode(2, 2));
-                nodes.add(makeValueNode(3, 3));
-                nodes.add(makeOperatorNode(10, '+', '+/2'));
+                nodes.add(new ValueNode(1, 1));
+                nodes.add(new ValueNode(2, 2));
+                nodes.add(new ValueNode(3, 3));
+                nodes.add(new OperatorNode(10, '+', '+/2'));
                 edges.add(makePartEdge(1, 10));
                 edges.add(makePartEdge(2, 10));
                 edges.add(makeTrunkEdge(10, 3));
@@ -62,10 +65,10 @@ describe("graphToRPN", function () {
 
         describe("multiplication equation" ,function () {
             beforeEach(() => {
-                nodes.add(makeValueNode(2, 2));
-                nodes.add(makeValueNode(3, 3));
-                nodes.add(makeValueNode(6, 6));
-                nodes.add(makeOperatorNode(10, '·', '·/2'));
+                nodes.add(new ValueNode(2, 2));
+                nodes.add(new ValueNode(3, 3));
+                nodes.add(new ValueNode(6, 6));
+                nodes.add(new OperatorNode(10, '·', '·/2'));
                 edges.add(makePartEdge(2, 10));
                 edges.add(makePartEdge(3, 10));
                 edges.add(makeTrunkEdge(10, 6));
@@ -94,10 +97,10 @@ describe("graphToRPN", function () {
 
         describe("power equation" ,function () {
             beforeEach(() => {
-                nodes.add(makeValueNode(2, 2));
-                nodes.add(makeValueNode(3, 3));
-                nodes.add(makeValueNode(9, 9));
-                nodes.add(makeOperatorNode(10, '◌ⁿ', '^/2'));
+                nodes.add(new ValueNode(2, 2));
+                nodes.add(new ValueNode(3, 3));
+                nodes.add(new ValueNode(9, 9));
+                nodes.add(new OperatorNode(10, '◌ⁿ', '^/2'));
                 edges.add(makeAEdge(2, 10));
                 edges.add(makeBEdge(3, 10));
                 edges.add(makeTrunkEdge(10, 9));
@@ -128,9 +131,9 @@ describe("graphToRPN", function () {
 
         describe("sine function" ,function () {
             beforeEach(() => {
-                nodes.add(makeValueNode(1, 1));
-                nodes.add(makeValueNode("90°", "90°"));
-                nodes.add(makeFunctionNode(10, 'sin', 'sin/1'));
+                nodes.add(new ValueNode(1, 1));
+                nodes.add(new ValueNode("90°", "90°"));
+                nodes.add(new FunctionNode(10, 'sin', 'sin/1'));
                 edges.add(makeOrderedEdge(1, 10));
                 edges.add(makeTrunkEdge(10, "90°"));
             });
@@ -153,9 +156,9 @@ describe("graphToRPN", function () {
 
         describe("cosine function" ,function () {
             beforeEach(() => {
-                nodes.add(makeValueNode(1, 1));
-                nodes.add(makeValueNode(0, 0));
-                nodes.add(makeFunctionNode(10, 'cos', 'cos/1'));
+                nodes.add(new ValueNode(1, 1));
+                nodes.add(new ValueNode(0, 0));
+                nodes.add(new FunctionNode(10, 'cos', 'cos/1'));
                 edges.add(makeOrderedEdge(1, 10));
                 edges.add(makeTrunkEdge(10, 0));
             });
@@ -178,9 +181,9 @@ describe("graphToRPN", function () {
 
         describe("tan function" ,function () {
             beforeEach(() => {
-                nodes.add(makeValueNode(1, 1));
-                nodes.add(makeValueNode("45°", "45°"));
-                nodes.add(makeFunctionNode(10, 'tan', 'tan/1'));
+                nodes.add(new ValueNode(1, 1));
+                nodes.add(new ValueNode("45°", "45°"));
+                nodes.add(new FunctionNode(10, 'tan', 'tan/1'));
                 edges.add(makeOrderedEdge(1, 10));
                 edges.add(makeTrunkEdge(10, "45°"));
             });
@@ -202,11 +205,11 @@ describe("graphToRPN", function () {
 
         /* describe("test function f/2 function" ,function () {
          *     beforeEach(() => {
-         *         nodes.add(makeValueNode(1, 1));
-         *         nodes.add(makeValueNode("x", "x"));
-         *         nodes.add(makeValueNode("y", "y"));
-         *         nodes.add(makeValueNode("xy", "xy"));
-         *         nodes.add(makeFunctionNode(10, 'f', 'f/2'));
+         *         nodes.add(new ValueNode(1, 1));
+         *         nodes.add(new ValueNode("x", "x"));
+         *         nodes.add(new ValueNode("y", "y"));
+         *         nodes.add(new ValueNode("xy", "xy"));
+         *         nodes.add(new FunctionNode(10, 'f', 'f/2'));
          *         edges.add(makeOrderedEdge("x", 10));
          *         edges.add(makeOrderedEdge("y", 10));
          *         edges.add(makeTrunkEdge(10, "xy"));
@@ -223,12 +226,12 @@ describe("graphToRPN", function () {
 
          * describe("test function f/3 function" ,function () {
          *     beforeEach(() => {
-         *         nodes.add(makeValueNode(1, 1));
-         *         nodes.add(makeValueNode("x", "x"));
-         *         nodes.add(makeValueNode("y", "y"));
-         *         nodes.add(makeValueNode("z", "z"));
-         *         nodes.add(makeValueNode("xyz", "xyz"));
-         *         nodes.add(makeFunctionNode(10, 'f', 'f/3'));
+         *         nodes.add(new ValueNode(1, 1));
+         *         nodes.add(new ValueNode("x", "x"));
+         *         nodes.add(new ValueNode("y", "y"));
+         *         nodes.add(new ValueNode("z", "z"));
+         *         nodes.add(new ValueNode("xyz", "xyz"));
+         *         nodes.add(new FunctionNode(10, 'f', 'f/3'));
          *         edges.add(makeOrderedEdge("x", 10));
          *         edges.add(makeOrderedEdge("y", 10));
          *         edges.add(makeOrderedEdge("z", 10));
@@ -259,13 +262,13 @@ describe("graphToRPN", function () {
                    .            3  +| = 7
                    .                1
                  */
-                nodes.add(makeValueNode(1, 1));
-                nodes.add(makeValueNode(2, 2));
-                nodes.add(makeValueNode(3, 3));
-                nodes.add(makeValueNode(6));
-                nodes.add(makeValueNode(7, 7));
-                nodes.add(makeOperatorNode(10, '+', '+/2'));
-                nodes.add(makeOperatorNode(20, '·', '·/2'));
+                nodes.add(new ValueNode(1, 1));
+                nodes.add(new ValueNode(2, 2));
+                nodes.add(new ValueNode(3, 3));
+                nodes.add(new ValueNode(6));
+                nodes.add(new ValueNode(7, 7));
+                nodes.add(new OperatorNode(10, '+', '+/2'));
+                nodes.add(new OperatorNode(20, '·', '·/2'));
 
                 edges.add(makePartEdge(2, 20));
                 edges.add(makePartEdge(3, 20));
@@ -328,13 +331,13 @@ describe("graphToRPN", function () {
                    .            3  ·| = 24
                    .                4
                  */
-                nodes.add(makeValueNode(2, 2));
-                nodes.add(makeValueNode(3, 3));
-                nodes.add(makeValueNode(4, 4));
-                nodes.add(makeValueNode(6));
-                nodes.add(makeValueNode(24, 24));
-                nodes.add(makeOperatorNode(10, '·', '·/2'));
-                nodes.add(makeOperatorNode(20, '·', '·/2'));
+                nodes.add(new ValueNode(2, 2));
+                nodes.add(new ValueNode(3, 3));
+                nodes.add(new ValueNode(4, 4));
+                nodes.add(new ValueNode(6));
+                nodes.add(new ValueNode(24, 24));
+                nodes.add(new OperatorNode(10, '·', '·/2'));
+                nodes.add(new OperatorNode(20, '·', '·/2'));
 
                 edges.add(makePartEdge(2, 20));
                 edges.add(makePartEdge(3, 20));
