@@ -43,6 +43,9 @@ describe("exprToRPN", function () {
         expect(exprToRPN("1 / 2 ^ 3")).to.deep.equal([1, 2, 3, "^/2", "//2"]);
 
         expect(exprToRPN("1 log 2 root 3")).to.deep.equal([1, 2, "log/2", 3, "√/2"]);
+
+        // TODO
+        //expect(exprToRPN("1 ^ 2 ^ 3")).to.deep.equal([1, 2, 3, "^/2", "^/2"]);
     });
 
     it("can parse parenthesis", function () {
