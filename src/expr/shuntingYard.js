@@ -1,12 +1,17 @@
 import { symbols, operators, isOperator } from './data.js';
+import { tokenize } from './tokenizer.js';
 
 
-function isInfix(name) {
-    return symbols[name] && symbols[name].infix !== undefined;
+function isInfix(id) {
+    return !!symbols[id] && symbols[id].infix;
 }
 
-function isUnary(name) {
-    return symbols[name] && symbols[name].unary !== undefined;
+function isUnary(id) {
+    return !!symbols[id] && symbols[id].unary;
+}
+
+function isFunction(id) {
+    return !!symbols[id] && symbols[id].func;
 }
 
 /**
@@ -29,22 +34,17 @@ function check(condition, errorMessage) {
     }
 }
 
+
 export function exprToRPN(expr) {
     const VALUE = 1, OPERATOR = 2;
-    var token,
-        st_token,      // stack token
+    var st_token,      // stack token
         output = [],
         stack = [],
         expected = VALUE,
-        tokens,
         n_params = 0;
 
-    // TODO: luotava automaattisest operaattoreista
-    tokens = expr.split(/(\)|\(|\+|-|–|\*|\/|^|√|<=>|=|,|;| )/).
-                  filter(function (a) { return a !== " " && a !== ""; });
 
-    for (let i = 0; i < tokens.length; i++) {
-        token = tokens[i];
+    for ( const token of tokenize(expr) ) {
         if ( isOperator(token) ) {        // Operaattori.
             if ( expected === OPERATOR ) {
                 check( isInfix(token), "expected infix operator" );
@@ -97,7 +97,7 @@ export function exprToRPN(expr) {
                 output.push(stack.pop() + "/" + n_params);
             }
             expected = OPERATOR;
-        } else if ( tokens[i+1] == "(" ) {  // funktiokutsu
+        } else if ( isFunction(token) ) {  // funktiokutsu
             check( expected === VALUE, `Unexpected token: ${token}` );
             check( Number(token).toString() !== token, `Unexpected token: ${token}` );
             stack.push(token);

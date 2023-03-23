@@ -75,8 +75,10 @@ describe("exprToRPN", function () {
         expect(exprToRPN("(a)")).to.deep.equal(["a"]);
         expect(exprToRPN("(((((((((a)))))))))")).to.deep.equal(["a"]);
         expect(exprToRPN("(a + 1)")).to.deep.equal(["a", 1, "+/2"]);
-        expect(exprToRPN("((a) + 1)")).to.deep.equal(["a", 1, "+/2"]);
-        expect(exprToRPN("((a) + (1))")).to.deep.equal(["a", 1, "+/2"]);
+        expect(exprToRPN("((((((a))))) + (1))")).to.deep.equal(["a", 1, "+/2"]);
+        expect(exprToRPN("((a) + (((((1))))))")).to.deep.equal(["a", 1, "+/2"]);
+        expect(exprToRPN("((((((a))))) + (((((1))))))")).to.deep.equal(["a", 1, "+/2"]);
+
 
     });
 
@@ -84,7 +86,7 @@ describe("exprToRPN", function () {
     it("throws on incorrect expressions", function () {
         expect(() => exprToRPN("1 + 1 -")).to.throw("Unexpected");
         expect(() => exprToRPN("1 + (")).to.throw("Unexpected");
-        expect(() => exprToRPN("· 1")).to.throw("Unexpected");
+        expect(() => exprToRPN("* 1")).to.throw("Unexpected");
         expect(() => exprToRPN("1 1")).to.throw("Unexpected");
         expect(() => exprToRPN(") + 1")).to.throw("Unexpected");
         expect(() => exprToRPN("(1 + 1) 1")).to.throw("Unexpected");
