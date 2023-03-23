@@ -4,10 +4,6 @@ import { exprToRPN } from './shuntingYard.js';
 
 
 describe("exprToRPN", function () {
-    it("xxx", function () {
-        expect(exprToRPN("((a))")).to.deep.equal(["a"]);
-    });
-
     it("can parse unary", function () {
         expect(exprToRPN("+2")).to.deep.equal([2, "+/1"]);
         expect(exprToRPN("-2")).to.deep.equal([2, "−/1"]);
@@ -75,6 +71,13 @@ describe("exprToRPN", function () {
 
         expect(exprToRPN("(1 / 2) ^ 3")).to.deep.equal([1, 2, "//2", 3, "^/2"]);
         expect(exprToRPN("1 ^ (2 / 3)")).to.deep.equal([1, 2, 3, "//2", "^/2"]);
+
+        expect(exprToRPN("(a)")).to.deep.equal(["a"]);
+        expect(exprToRPN("(((((((((a)))))))))")).to.deep.equal(["a"]);
+        expect(exprToRPN("(a + 1)")).to.deep.equal(["a", 1, "+/2"]);
+        expect(exprToRPN("((a) + 1)")).to.deep.equal(["a", 1, "+/2"]);
+        expect(exprToRPN("((a) + (1))")).to.deep.equal(["a", 1, "+/2"]);
+
     });
 
 
@@ -85,13 +88,10 @@ describe("exprToRPN", function () {
         expect(() => exprToRPN("1 1")).to.throw("Unexpected");
         expect(() => exprToRPN(") + 1")).to.throw("Unexpected");
         expect(() => exprToRPN("(1 + 1) 1")).to.throw("Unexpected");
-        // TODO
-
         expect(() => exprToRPN("1 + )")).to.throw("Unexpected");
 
-
+        // ??
         expect(() => exprToRPN("()")).to.throw("Unexpected");
-        expect(() => exprToRPN("((1 + 1))")).to.throw();
 
         expect(() => exprToRPN("1 (1 + 1)")).to.throw("Unexpected");
 
