@@ -1,4 +1,4 @@
-import { operators, functions } from '../expr/data.js';
+import { operators } from '../expr/data.js';
 
 
 export function isMain(op_or_func) {
@@ -12,7 +12,7 @@ export function isMain(op_or_func) {
 export function getInverse(op_or_func) {
     switch ( op_or_func ) {
         case '+/1':
-            return '-/1';
+            return '−/1';
         case 'sin/1':
             return 'arcsin/1';
         case 'cos/1':
@@ -21,9 +21,9 @@ export function getInverse(op_or_func) {
             return 'arctan/1';
 
         case '+/2':
-            return '-/2';
+            return '−/2';
         case '·/2':
-            return ':/2';
+            return '//2';
         case '^/2':
             return '√/2';
     }
