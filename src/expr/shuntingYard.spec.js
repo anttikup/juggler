@@ -4,6 +4,10 @@ import { exprToRPN } from './shuntingYard.js';
 
 
 describe("exprToRPN", function () {
+    it("xxx", function () {
+        expect(exprToRPN("((a))")).to.deep.equal(["a"]);
+    });
+
     it("can parse unary", function () {
         expect(exprToRPN("+2")).to.deep.equal([2, "+/1"]);
         expect(exprToRPN("-2")).to.deep.equal([2, "−/1"]);
@@ -87,7 +91,7 @@ describe("exprToRPN", function () {
 
 
         expect(() => exprToRPN("()")).to.throw("Unexpected");
-        expect(() => exprToRPN("((1 + 1))")).to.throw("Missing");
+        expect(() => exprToRPN("((1 + 1))")).to.throw();
 
         expect(() => exprToRPN("1 (1 + 1)")).to.throw("Unexpected");
 

@@ -1,4 +1,4 @@
-import { operators, functions } from '../expr/data.js';
+import { operators } from '../expr/data.js';
 
 
 export function isMain(op_or_func) {

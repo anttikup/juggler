@@ -36,7 +36,7 @@ export function combineNodes(network, newNodeId, ...oldNodeIds) {
     const edges = network.body.data.edges;
     const nodes = network.body.data.nodes;
 
-    const edgesToMove = edges.get(oldNodeIds.flatMap(oldNode => network.getConnectedEdges(oldNode)));
+    const edgesToMove = edges.get(oldNodeIds.flatMap(id => network.getConnectedEdges(id)));
 
     edgesToMove.forEach(edge => {
         if ( oldNodeIds.includes(edge.from) ) {
@@ -96,7 +96,6 @@ export function getNeighboursOfType(network, nodeId, type) {
 
     const nodeIds = network.getConnectedNodes(nodeId);
     const res = nodes.get(nodeIds).filter(node => node.data === type);
-    //console.log("Found neighbours of type", type, ":", res);
 
     return res;
 };
@@ -177,7 +176,7 @@ export function findLoopingPaths(network, start, path) {
  **/
 export function findLoopingPathsWithRole(network, start, path) {
     const paths = findPathsWithRole(network, start, path);
-    //console.log("paths:", paths);
+
     // Find the paths that end in the same +/2 node.
     const bundledPaths = bundlePaths(paths);
 
@@ -216,7 +215,6 @@ export function getMembers(network, nodeId) {
         } else {
             members[ role ] = children[0];
         }
-        //console.log(" ", role, "->", children);
     }
 
     return members;
@@ -292,8 +290,6 @@ export function findPathsWithRole(network, start, path) {
 
         const role = pathLeft[0];
         const type = pathLeft[1];
-
-        //console.log("looking for ", role, "in", type);
 
         let neighbours = [];
         if ( type === 'value' ) {

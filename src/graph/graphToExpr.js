@@ -1,5 +1,4 @@
 import { isMain, getInverse, getReverse } from './inverse.js';
-import { functions } from '../expr/index.js';
 import { isBinary, isCommutative, isFunction, isUnary } from './operators.js';
 
 
@@ -49,7 +48,6 @@ export function graphToRPN(network, start) {
             } else {
                 members[ role ] = children[0];
             }
-            //console.log(" ", role, "->", children);
         }
 
         return members;
@@ -68,7 +66,6 @@ export function graphToRPN(network, start) {
 
             const operator = nodes.get(neighbour).data;
             const members = getMembersOfRelation(neighbour);
-            //console.log("operator:", operator, "members:", members, "node:", nodeId);
 
             if ( members.trunk === nodeId && isBinary(operator) ) {
                 text(members.operands[0], output);

@@ -1,12 +1,18 @@
-import { operators, functions } from '../expr/data.js';
+import { operators } from '../expr/data.js';
 
 export function isBinary(operatorId) {
     const info = operators[operatorId] || functions[operatorId];
+    if ( !info ) {
+        throw new Error(`No such operator ${operatorId}`);
+    }
     return info.arity === 2;
 };
 
 export function isUnary(operatorId) {
     const info = operators[operatorId] || functions[operatorId];
+    if ( !info ) {
+        throw new Error(`No such operator ${operatorId}`);
+    }
     return info.arity === 1;
 };
 
@@ -28,6 +34,15 @@ export function isAssociative(operatorId) {
     return info.associative || false;
 };
 
+export function isMainForm(operatorId) {
+    const info = operators[operatorId] || functions[operatorId];
+    if ( !info ) {
+        throw new Error(`No such operator ${operatorId}`);
+    }
+
+    return !info.inverseOf || false;
+};
+
 export function isFunction(operatorId) {
-    return !!functions[operatorId];
+    return operators[operatorId] && operators[operatorId].display === "func";
 };
