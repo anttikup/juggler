@@ -21,6 +21,7 @@ export const operators = {
         symbol: "sqrt",
         precedence: 10,
         arity: 1,
+        spacing: 'sqrt ',
     },
 
     /** infix **/
@@ -81,6 +82,7 @@ export const operators = {
         symbol: ",",
         precedence: 1,
         arity: 2,
+        spacing: ', ',
     },
     "=/2" : {
         symbol: "=",
@@ -133,6 +135,7 @@ export const operators = {
         arity: 2,
         commutative: true,
         associative: true,
+        spacing: '; ',
     },
     "sin/1" : {
         symbol: "sin",

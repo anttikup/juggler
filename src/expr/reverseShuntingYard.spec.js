@@ -7,8 +7,6 @@ describe("rpnToExpr", function () {
     it("can construct unary", function () {
         expect(rpnToExpr([1, "+/1"])).to.equal("+1");
         expect(rpnToExpr([1, "−/1"])).to.equal("-1");
-        // ??
-        expect(rpnToExpr([2, "√/1"])).to.equal("sqrt2");
     });
 
     it("can construct infix", function () {
@@ -19,6 +17,12 @@ describe("rpnToExpr", function () {
         expect(rpnToExpr([1, 2, "^/2"])).to.equal("1 ^ 2");
         expect(rpnToExpr([1, 2, "√/2"])).to.equal("1 root 2");
         expect(rpnToExpr([1, 2, "log/2"])).to.equal("1 log 2");
+    });
+
+    it("can use special spacing", function () {
+        expect(rpnToExpr([1, 2, ";/2"])).to.equal("1; 2");
+        expect(rpnToExpr([1, 2, ",/2"])).to.equal("1, 2");
+        expect(rpnToExpr([2, "√/1"])).to.equal("sqrt 2");
     });
 
     it("can construct complex expressions", function () {

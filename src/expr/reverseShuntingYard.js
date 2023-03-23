@@ -51,12 +51,18 @@ function getText(operator, params) {
     }
 
     if ( operator.arity === 1 ) {
-        return operator.symbol + params[0];
+        if ( operator.spacing ) {
+            return operator.spacing + params[0];
+        } else {
+            return operator.symbol + params[0];
+        }
+    } else {
+        if ( operator.spacing ) {
+            return params.join(operator.spacing)
+        } else {
+            return params.join(' ' + operator.symbol + ' ');
+        }
     }
-
-    return operator.symbol === ','
-         ? params.join(', ')
-         : params.join(' ' + operator.symbol + ' ');
 }
 
 /**
