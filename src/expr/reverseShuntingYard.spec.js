@@ -82,4 +82,24 @@ describe("rpnToExpr", function () {
         expect(rpnToExpr([1, 2, ",/2", 3, "f/2"])).to.equal("f(1, 2, 3)");
     });
 
+    it("no parenthesis around associative expressions", function () {
+        expect(rpnToExpr([2, 3, 4, "+/2", "+/2"])).to.equal("2 + 3 + 4");
+        expect(rpnToExpr([2, 3, 4, "+/2", "−/2"])).to.equal("2 - 3 + 4");
+        expect(rpnToExpr([2, 3, 4, "·/2", "·/2"])).to.equal("2 * 3 * 4");
+        expect(rpnToExpr([2, 3, 4, "=/2", "=/2"])).to.equal("2 = 3 = 4");
+        expect(rpnToExpr([2, 3, 4, "⇔/2", "⇔/2"])).to.equal("2 <=> 3 <=> 4");
+        expect(rpnToExpr([2, 3, 4, "≠/2", "≠/2"])).to.equal("2 != 3 != 4");
+        expect(rpnToExpr([2, 'x', 4, "</2", "</2"])).to.equal("2 < x < 4");
+    });
+
+    it("parenthesis around non-associative expressions", function () {
+        expect(rpnToExpr([2, 3, 4, "−/2", "+/2"])).to.equal("2 + (3 - 4)");
+        expect(rpnToExpr([2, 3, 4, "−/2", "−/2"])).to.equal("2 - (3 - 4)");
+        expect(rpnToExpr([2, 3, 4, "//2", "·/2"])).to.equal("2 * (3 / 4)");
+        expect(rpnToExpr([2, 3, 4, "·/2", "//2"])).to.equal("2 / 3 * 4");
+        expect(rpnToExpr([2, 3, 4, "//2", "//2"])).to.equal("2 / (3 / 4)");
+        expect(rpnToExpr([2, 3, 4, "^/2", "^/2"])).to.equal("2 ^ (3 ^ 4)");
+    });
+
+
 });

@@ -73,21 +73,24 @@ export function rpnToExpr(rpn) {
             const operator = getOperator(token);
             const arity = operator.arity;
             const precedence = operator.precedence;
+            const associative = operator.associative || false;
             const params = [];
 
             console.assert ( arity <= stack.length, "Not enough parameters" );
 
             for ( let j = 0; j < arity - 1; j++ ) {
                 const item = stack.pop();
-
+                console.log(item, "it:", item.precedence, "op:", operator.symbol, precedence, associative);
                 if ( item.precedence !== undefined ) {
-                    if ( item.precedence <= precedence ) {
-                        params[arity-j-1] = "(" + item.text + ")";
+                    if ( item.precedence < precedence ) {
+                        params[arity - j - 1] = "(" + item.text + ")";
+                    } else if ( item.precedence === precedence && !associative ) {
+                        params[arity - j - 1] = "(" + item.text + ")";
                     } else {
-                        params[arity-j-1] = item.text;
+                        params[arity - j - 1] = item.text;
                     }
                 } else {
-                    params[arity-j-1] = item.text;
+                    params[arity - j - 1] = item.text;
                 }
             }
 
@@ -101,7 +104,6 @@ export function rpnToExpr(rpn) {
             } else {
                 params[0] = lastParam.text;
             }
-
 
 
             if ( arity === 1 ) {
@@ -127,7 +129,7 @@ export function rpnToExpr(rpn) {
 
             for ( let j = 0; j < arity; j++ ) {
                 const item = stack.pop();
-                params[arity-j-1] = item.text;
+                params[arity - j - 1] = item.text;
             }
 
             stack.push({
