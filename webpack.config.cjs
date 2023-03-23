@@ -16,6 +16,10 @@ module.exports = {
                     'style-loader',
                     'css-loader'
                 ]
+            },
+            {
+                test: /\.jpe?g$|\.ico$|\.gif$|\.png$|\.svg$|\.woff$|\.ttf$|\.wav$|\.mp3$/,
+                use: 'file-loader?name=[name].[ext]'  // <-- retain original file name
             }
         ]
     },
@@ -37,7 +41,8 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: 'src/index.html'
+            template: 'src/index.html',
+                favicon: 'src/images/favicon.ico'
         })
     ]
 };
