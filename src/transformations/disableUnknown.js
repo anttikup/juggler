@@ -30,11 +30,8 @@ export function toggleEnabled(graph, nodeId) {
     }
 
     if ( node.data ) {
-        console.log("disable");
         disableUnknown(graph, nodeId);
     } else {
-        console.log("enable");
-
         enableUnknown(graph, nodeId);
     }
 };
