@@ -77,13 +77,13 @@ describe("rpnToExpr", function () {
     });
 
     it("can construct multiparameter functions", function () {
-        expect(rpnToExpr([1, 2, "f/2"])).to.equal("f(1, 2)");
-        expect(rpnToExpr(["x", "y", "f/2"])).to.equal("f(x, y)");
-        expect(rpnToExpr([1, 2, 3, "f/3"])).to.equal("f(1, 2, 3)");
+        expect(rpnToExpr([1, 2, "test/2"])).to.equal("test(1, 2)");
+        expect(rpnToExpr(["x", "y", "test/2"])).to.equal("test(x, y)");
+        expect(rpnToExpr([1, 2, 3, "test/3"])).to.equal("test(1, 2, 3)");
 
         // ?? TODO these shouldn't work
         expect(rpnToExpr([1, 2, ",/2", "cos/1"])).to.equal("cos(1, 2)");
-        expect(rpnToExpr([1, 2, ",/2", 3, "f/2"])).to.equal("f(1, 2, 3)");
+        expect(rpnToExpr([1, 2, ",/2", 3, "test/2"])).to.equal("test(1, 2, 3)");
     });
 
     it("no parenthesis around associative expressions", function () {

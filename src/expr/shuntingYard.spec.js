@@ -99,18 +99,22 @@ describe("exprToRPN", function () {
 
     });
 
+    it("throws when function is used as a value", function () {
+        expect(() => exprToRPN("1 + cos")).to.throw("Unexpected");
+    });
+
     it("can parse simple functions", function () {
-        expect(exprToRPN("f(1)")).to.deep.equal([1, "f/1"]);
-        expect(exprToRPN("f(1 + 2)")).to.deep.equal([1, 2, "+/2", "f/1"]);
-        expect(exprToRPN("f(1, 2)")).to.deep.equal([1, 2, "f/2"]);
+        expect(exprToRPN("test(1)")).to.deep.equal([1, "test/1"]);
+        expect(exprToRPN("test(1 + 2)")).to.deep.equal([1, 2, "+/2", "test/1"]);
+        expect(exprToRPN("test(1, 2)")).to.deep.equal([1, 2, "test/2"]);
     });
 
     it("can parse multiparameter functions", function () {
-        expect(exprToRPN("f(1, 2)")).to.deep.equal([1, 2, "f/2"]);
-        expect(exprToRPN("f(1, 2, 3)")).to.deep.equal([1, 2, ",/2", 3, "f/2"]);
-        expect(exprToRPN("f(-1, -2, -3)")).to.deep.equal([1, "−/1", 2, "−/1", ",/2", 3, "−/1", "f/2"]);
-        expect(exprToRPN("f(1 + 2, 3 + 4)")).to.deep.equal([1, 2, "+/2", 3, 4, "+/2", "f/2"]);
-        expect(exprToRPN("f(1 + 2, 3 + 4, 5 + 6)")).to.deep.equal([1, 2, "+/2", 3, 4, "+/2", ",/2", 5, 6, "+/2", "f/2"]);
+        expect(exprToRPN("test(1, 2)")).to.deep.equal([1, 2, "test/2"]);
+        expect(exprToRPN("test(1, 2, 3)")).to.deep.equal([1, 2, ",/2", 3, "test/2"]);
+        expect(exprToRPN("test(-1, -2, -3)")).to.deep.equal([1, "−/1", 2, "−/1", ",/2", 3, "−/1", "test/2"]);
+        expect(exprToRPN("test(1 + 2, 3 + 4)")).to.deep.equal([1, 2, "+/2", 3, 4, "+/2", "test/2"]);
+        expect(exprToRPN("test(1 + 2, 3 + 4, 5 + 6)")).to.deep.equal([1, 2, "+/2", 3, 4, "+/2", ",/2", 5, 6, "+/2", "test/2"]);
     });
 
     it("can parse semicolon", function () {
@@ -119,5 +123,7 @@ describe("exprToRPN", function () {
         expect(exprToRPN("y = 1*x + 2; y = 2*x + 3"))
             .to.deep.equal(["y", 1, "x", "·/2", 2, "+/2", "=/2", "y", 2, "x", "·/2", 3, "+/2", "=/2", ";/2"]);
     });
+
+
 
 });

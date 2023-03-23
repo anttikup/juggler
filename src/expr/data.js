@@ -169,23 +169,23 @@ export const operators = {
     },
 
     // For testing; TODO needs a way to insert functions
-    "f/2" : {
-        symbol: "f",
+    "test/2" : {
+        symbol: "test",
         arity: 2,
         display: "func",
     },
-    "f/3" : {
-        symbol: "f",
+    "test/3" : {
+        symbol: "test",
         arity: 3,
         display: "func",
     },
-    "invf/2" : {
-        symbol: "invf",
+    "invtest/2" : {
+        symbol: "invtest",
         arity: 2,
         display: "func",
     },
-    "revf/2" : {
-        symbol: "revf",
+    "revtest/2" : {
+        symbol: "revtest",
         arity: 2,
         display: "func",
     },
