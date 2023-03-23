@@ -1,3 +1,6 @@
+// associative: (a ∗ b) ∗ c = a ∗ (b ∗ c)
+// commutative: a ∗ b = b ∗ a
+
 export const operators = {
     /** prefix **/
     "+/1" : {
@@ -20,87 +23,103 @@ export const operators = {
     "./2" : {
         symbol: ".",
         precedence: 8,
-        arity: 2
+        arity: 2,
     },
     "^/2" : {
         symbol: "^",
         precedence: 6,
-        arity: 2
+        arity: 2,
     },
     "√/2" : {
         symbol: "root",
         precedence: 6,
-        arity: 2
+        arity: 2,
     },
     "log/2" : {
         symbol: "log",
         precedence: 6,
-        arity: 2
+        arity: 2,
     },
     "·/2" : {
         symbol: "*",
         precedence: 4,
-        arity: 2
+        arity: 2,
+        commutative: true,
+        associative: true,
     },
     "//2" : {
         symbol: "/",
         precedence: 4,
-        arity: 2
+        arity: 2,
     },
     "+/2" : {
         symbol: "+",
         precedence: 2,
-        arity: 2
+        arity: 2,
+        commutative: true,
+        associative: true,
     },
     "−/2" : {
         symbol: "-",
         precedence: 2,
-        arity: 2
+        arity: 2,
     },
     ",/2" : {
         symbol: ",",
         precedence: 1,
-        arity: 2
+        arity: 2,
     },
     "=/2" : {
         symbol: "=",
         precedence: 0,
-        arity: 2
+        arity: 2,
+        commutative: true,
+        associative: true,
     },
     "≠/2"  : {
         symbol: "!=",
         precedence: 0,
-        arity: 2
+        arity: 2,
+        commutative: true,
+        associative: true,
     },
     "</2"  : {
         symbol: "<",
         precedence: 0,
-        arity: 2
+        arity: 2,
+        associative: true,
     },
     ">/2"  : {
         symbol: ">",
         precedence: 0,
-        arity: 2
+        arity: 2,
+        associative: true,
     },
     "≤/2"  : {
         symbol: "<=",
         precedence: 0,
-        arity: 2
+        arity: 2,
+        associative: true,
     },
     "≥/2"  : {
         symbol: ">=",
         precedence: 0,
-        arity: 2
+        arity: 2,
+        associative: true,
     },
     "⇔/2" : {
         symbol: "<=>",
         precedence: -1,
-        arity: 2
+        arity: 2,
+        commutative: true,
+        associative: true,
     },
     ";/2" : {
         symbol: ";",
         precedence: -1,
-        arity: 2
+        arity: 2,
+        commutative: true,
+        associative: true,
     }
 };
 

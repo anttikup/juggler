@@ -1,5 +1,6 @@
-import { isMain, getInverse } from './inverse.js';
+import { isMain, getInverse, getReverse } from './inverse.js';
 import { functions } from '../expr/index.js';
+import { isBinary, isCommutative, isFunction, isUnary } from './operators.js';
 
 
 export function graphToRPN(network, start) {
@@ -55,8 +56,9 @@ export function graphToRPN(network, start) {
     }
 
     function graphToRPNRecursive(nodeId, output) {
-        const neighbours = network.getConnectedNodes(nodeId);
         let added = 0;
+        const neighbours = network.getConnectedNodes(nodeId);
+
         for ( let neighbour of neighbours ) {
             if ( visited[neighbour] ) {
                 continue;
@@ -68,54 +70,41 @@ export function graphToRPN(network, start) {
             const members = getMembersOfRelation(neighbour);
             //console.log("operator:", operator, "members:", members, "node:", nodeId);
 
-            if ( members['trunk'] === nodeId  && operator === "^/2" ) {
-                text(members.operands[0], output);
-                text(members.operands[1], output);
-                output.push('^/2');
-
-            } else if ( members['trunk'] === nodeId  && ["+/1", "−/1"].includes(operator) ) {
-                text(members.operands[0], output);
-                output.push(operator);
-            } else if ( members['trunk'] === nodeId  && ["·/2", "+/2"].includes(operator) ) {
+            if ( members.trunk === nodeId && isBinary(operator) ) {
                 text(members.operands[0], output);
                 text(members.operands[1], output);
                 output.push(operator);
-            } else if ( members.operands[0] === nodeId && operator === "^/2" ) {
-                text(members.operands[1], output);
-                text(members['trunk'], output);
-                output.push('√/2');
 
-            } else if ( members.operands[1] === nodeId && operator === "^/2" ) {
-                text(members.operands[0], output);
-                text(members['trunk'], output);
-                output.push('log/2');
-
-            } else if ( members['operands'] && members['operands'].includes(nodeId) && operator === "·/2" ) {
-
-                text(members['trunk'], output);
-                members.operands.forEach((member) => {
-                    if ( member !== nodeId ) {
-                        text(member, output);
-                    }
-                });
-                output.push('//' + members.operands.length);
-
-            } else if ( members['operands'] && members['operands'].includes(nodeId) && ["+/1", "+/2"].includes(operator) ) {
-                text(members['trunk'], output);
-                members.operands.forEach((member) => {
-                    if ( member !== nodeId ) {
-                        text(member, output);
-                    }
-                });
-                output.push('−/' + members.operands.length);
-
-            } else if ( members['trunk'] === nodeId && functions[operator] && isMain(operator) ) {
+            } else if ( members.trunk === nodeId  && isUnary(operator) ) {
                 text(members.operands[0], output);
                 output.push(operator);
-
-            } else if ( members.operands && members.operands[0] === nodeId && isMain(operator) ) {
-                text(members['trunk'], output);
+            }
+            // eg. exponentiation
+            else if ( members.operands[0] === nodeId && isBinary(operator) && !isCommutative(operator) ) {
+                text(members.operands[1], output);
+                text(members.trunk, output);
+                // eg. root for exponentiation
                 output.push(getInverse(operator));
+
+            } else if ( members.operands[1] === nodeId && isBinary(operator) && !isCommutative(operator) ) {
+                text(members.operands[0], output);
+                text(members.trunk, output);
+                // eg. logarithm for exponentiation
+                output.push(getReverse(operator));
+
+            } else if ( members.operands.includes(nodeId) && isCommutative(operator) ) {
+                text(members.trunk, output);
+                members.operands.forEach((member) => {
+                    if ( member !== nodeId ) {
+                        text(member, output);
+                    }
+                });
+                output.push(getInverse(operator));
+
+            } else if ( members.operands[0] === nodeId && isUnary(operator) ) {
+                text(members.trunk, output);
+                output.push(getInverse(operator));
+
             } else {
                 throw new Error(`Unknown operator: ${operator}`);
             }

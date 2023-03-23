@@ -18,7 +18,7 @@ import { isNumber } from './util.js';
 
 
 
-function combineNodes(from, to, edges) {
+function combineNodes(edges, from, to) {
     console.log("MOVE EDGES:", from, to);
 
     const edges_to_move = edges.get({
@@ -64,13 +64,13 @@ export function rpnToGraph(rpn) {
                 console.log("= (1) [", op1, "]:", nodes.get(op1));
                 console.log("= (2) [", op2, "]:", nodes.get(op2));
                 if ( nodes.get(op1).data !== null ) {
-                    stack.push(combineNodes(op2, op1, edges));
+                    stack.push(combineNodes(edges, op2, op1));
                     nodes.remove(op2);
                 } else if ( nodes.get(op2).data !== null ) {
-                    stack.push(combineNodes(op1, op2, edges));
+                    stack.push(combineNodes(edges, op1, op2));
                     nodes.remove(op1);
                 } else {
-                    stack.push(combineNodes(op1, op2, edges));
+                    stack.push(combineNodes(edges, op1, op2));
                     nodes.remove(op1);
                 }
                 nodes.remove(opId);
