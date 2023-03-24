@@ -5,6 +5,7 @@ import Graph from "./graph/index.js";
 import { exprToRPN, rpnToExpr, functions } from './expr/index.js';
 import { extractCommonFactor } from './transformations/commonFactor.js';
 import { toggleEnabled } from './transformations/disableUnknown.js';
+import message from './message.js';
 
 import "./index.css";
 
@@ -55,11 +56,20 @@ window.onload = () => {
     };
 
     document.querySelector('#disable').onclick = (event) => {
+        message.setMessage('hello', 'hello, man');
+
         const ids = graph.getSelectedNodes();
         ids.forEach((id) => {
             toggleEnabled(graph, id);
         });
 
+    };
+
+    document.querySelector('#message').onmouseleave = (event) => {
+        message.hide();
+    };
+    document.querySelector('#message').onmouseenter = (event) => {
+        message.keep();
     };
 
 };
