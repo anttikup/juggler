@@ -56,8 +56,6 @@ window.onload = () => {
     };
 
     document.querySelector('#disable').onclick = (event) => {
-        message.setMessage('hello', 'hello, man');
-
         const ids = graph.getSelectedNodes();
         ids.forEach((id) => {
             toggleEnabled(graph, id);
@@ -70,6 +68,14 @@ window.onload = () => {
     };
     document.querySelector('#message').onmouseenter = (event) => {
         message.keep();
+    };
+
+    window.onerror = (errorMessage, url, lineNumber) => {
+        const pos = errorMessage.indexOf(': ');
+        const title = errorMessage.slice(0, pos);
+        const msg = errorMessage.slice(pos + 2);
+        message.setMessage(title, msg);
+        return false;
     };
 
 };
