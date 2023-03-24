@@ -61,6 +61,7 @@ describe("graphToRPN", function () {
             });
         });
 
+
         describe("multiplication equation" ,function () {
             beforeEach(() => {
                 nodes.add(new ValueNode(2, 2));
@@ -104,6 +105,7 @@ describe("graphToRPN", function () {
                 edges.add(new TrunkEdge(10, 9));
             });
 
+
             it("returns result point-of-view", function () {
 
                 {
@@ -126,6 +128,32 @@ describe("graphToRPN", function () {
                 }
             });
         });
+
+
+        describe("unary plus" ,function () {
+            beforeEach(() => {
+                nodes.add(new ValueNode(1, 1));
+                nodes.add(new ValueNode(2, 2));
+                nodes.add(new OperatorNode(10, '+', '+/1'));
+                edges.add(new OperandEdge(2, 10));
+                edges.add(new TrunkEdge(10, 1));
+            });
+
+            it("returns trunk point-of-view", function () {
+                {
+                    const rpn = graphToRPN(network, 1);
+                    expect(rpn).to.deep.equal([1, 2, "+/1", "=/2"]);
+                }
+            });
+
+            it("returns operand point-of-view", function () {
+                {
+                    const rpn = graphToRPN(network, 2);
+                    expect(rpn).to.deep.equal([2, 1, "−/1", "=/2"]);
+                }
+            });
+        });
+
 
         describe("sine function" ,function () {
             beforeEach(() => {

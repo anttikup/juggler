@@ -1,4 +1,5 @@
 export const operatorColors = {
+    '+/1': { nodeColor: '#0abf57', textColor: 'white' },
     '+/2': { nodeColor: '#0abf57', textColor: 'white' },
     '·/2': { nodeColor: '#0a57bf', textColor: 'white' },
     '^/2': { nodeColor: '#bf0a57', textColor: 'white' },

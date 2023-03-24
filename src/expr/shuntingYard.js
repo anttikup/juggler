@@ -45,7 +45,6 @@ export function exprToRPN(expr) {
 
 
     for ( const token of tokenize(expr) ) {
-        console.log("TOKEN:", token);
         if ( isOperator(token) ) {        // Operaattori.
             if ( expected === OPERATOR ) {
                 check( isInfix(token), "expected infix operator" );

@@ -66,6 +66,7 @@ export function graphToRPN(network, start) {
 
             const operator = nodes.get(neighbour).data;
             const members = getMembersOfRelation(neighbour);
+            console.log(members);
 
             if ( members.trunk === nodeId && isBinary(operator) ) {
                 text(members.operands[0], output);
@@ -99,10 +100,15 @@ export function graphToRPN(network, start) {
                 output.push(getInverse(operator));
 
             } else if ( members.operands[0] === nodeId && isUnary(operator) ) {
-                text(members.trunk, output);
+                text(members.operands[1] || members.trunk, output);
+                output.push(getInverse(operator));
+
+            } else if ( members.operands[1] === nodeId && isUnary(operator) ) {
+                text(members.operands[0] || members.trunk, output);
                 output.push(getInverse(operator));
 
             } else {
+                console.log(nodeId, members.operands);
                 throw new Error(`Unknown operator: ${operator}`);
             }
 
