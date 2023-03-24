@@ -1,9 +1,18 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Formula visualisation app">
+    <meta name="keywords" content="algebra formula math visualisation visualization">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Juggler</title>
   </head>
   <body>
+    <div id="message">
+      <h2 id="message-title">Hello</h2>
+      <p id="message-body">
+      </p>
+    </div>
     <div id="grid">
       <div id="formula-bar">
         Input formula: <input type="text" value="KE = 1/2 * m_e * v ^ 2 = h * f - W; f = c / λ" id="formula" /> Output: <input type="text" value="" id="output" disabled /> <button id="copy-to-input" title="Copy to input">&nbsp;⟵&nbsp;</button>

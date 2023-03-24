@@ -5,6 +5,7 @@ import Graph from "./graph/index.js";
 import { exprToRPN, rpnToExpr, functions } from './expr/index.js';
 import { extractCommonFactor } from './transformations/commonFactor.js';
 import { toggleEnabled } from './transformations/disableUnknown.js';
+import message from './message.js';
 
 import "./index.css";
 
@@ -60,6 +61,21 @@ window.onload = () => {
             toggleEnabled(graph, id);
         });
 
+    };
+
+    document.querySelector('#message').onmouseleave = (event) => {
+        message.hide();
+    };
+    document.querySelector('#message').onmouseenter = (event) => {
+        message.keep();
+    };
+
+    window.onerror = (errorMessage, url, lineNumber) => {
+        const pos = errorMessage.indexOf(': ');
+        const title = errorMessage.slice(0, pos);
+        const msg = errorMessage.slice(pos + 2);
+        message.setMessage(title, msg);
+        return false;
     };
 
 };
