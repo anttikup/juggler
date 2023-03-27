@@ -67,7 +67,7 @@ export class ValueNode extends Node {
 
     constructor(id, value = null, name = null) {
         super(id, value, String(value ?? ' '));
-        this.label = name || this.label;
+        this.label = name ?? this.label;
         this.type = 'value';
         const { nodeColor, textColor } = getValueColors(value);
         this.color = nodeColor;

@@ -20,5 +20,5 @@ export function intersection(setA, ...sets) {
         }
         setA = out;
     }
-    return out || setA;
+    return out ?? setA;
 };

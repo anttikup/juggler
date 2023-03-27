@@ -1,7 +1,7 @@
 import { operators } from '../expr/data.js';
 
 export function isBinary(operatorId) {
-    const info = operators[operatorId] || functions[operatorId];
+    const info = operators[operatorId] ?? functions[operatorId];
     if ( !info ) {
         throw new Error(`No such operator ${operatorId}`);
     }
@@ -9,7 +9,7 @@ export function isBinary(operatorId) {
 };
 
 export function isUnary(operatorId) {
-    const info = operators[operatorId] || functions[operatorId];
+    const info = operators[operatorId] ?? functions[operatorId];
     if ( !info ) {
         throw new Error(`No such operator ${operatorId}`);
     }
@@ -17,7 +17,7 @@ export function isUnary(operatorId) {
 };
 
 export function isCommutative(operatorId) {
-    const info = operators[operatorId] || functions[operatorId];
+    const info = operators[operatorId] ?? functions[operatorId];
     if ( !info ) {
         throw new Error(`No such operator ${operatorId}`);
     }
@@ -26,7 +26,7 @@ export function isCommutative(operatorId) {
 };
 
 export function isAssociative(operatorId) {
-    const info = operators[operatorId] || functions[operatorId];
+    const info = operators[operatorId] ?? functions[operatorId];
     if ( !info ) {
         throw new Error(`No such operator ${operatorId}`);
     }
@@ -35,7 +35,7 @@ export function isAssociative(operatorId) {
 };
 
 export function isMainForm(operatorId) {
-    const info = operators[operatorId] || functions[operatorId];
+    const info = operators[operatorId] ?? functions[operatorId];
     if ( !info ) {
         throw new Error(`No such operator ${operatorId}`);
     }
