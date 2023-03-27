@@ -51,9 +51,9 @@ export function rpnToGraph(rpn) {
     for ( let item of rpn ) {
         if ( operators[item] ) {
             const operatorId = item;
-            const operatorInfo = operators[operatorId] || functions[operatorId];
+            const operatorInfo = operators[operatorId] ?? functions[operatorId];
             const arity = operatorInfo.arity;
-            const symbol = operatorInfo.graphSymbol || operatorInfo.symbol;
+            const symbol = operatorInfo.graphSymbol ?? operatorInfo.symbol;
             const opId = makeId();
 
             if ( isMainForm(operatorId) ) {
@@ -102,7 +102,7 @@ export function rpnToGraph(rpn) {
             } else {
                 const mainFormId = operatorInfo.inverseOf;
                 const mainFormInfo = operators[mainFormId];
-                const symbol = mainFormInfo.graphSymbol || mainFormInfo.symbol;
+                const symbol = mainFormInfo.graphSymbol ?? mainFormInfo.symbol;
 
                 if ( isBinary(mainFormId) && isAssociative(mainFormId) ) {
                     nodes.add(new OperatorNode(opId, symbol, mainFormId));

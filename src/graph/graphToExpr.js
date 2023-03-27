@@ -100,11 +100,11 @@ export function graphToRPN(network, start) {
                 output.push(getInverse(operator));
 
             } else if ( members.operands[0] === nodeId && isUnary(operator) ) {
-                text(members.operands[1] || members.trunk, output);
+                text(members.operands[1] ?? members.trunk, output);
                 output.push(getInverse(operator));
 
             } else if ( members.operands[1] === nodeId && isUnary(operator) ) {
-                text(members.operands[0] || members.trunk, output);
+                text(members.operands[0] ?? members.trunk, output);
                 output.push(getInverse(operator));
 
             } else {
